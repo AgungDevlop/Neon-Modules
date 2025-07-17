@@ -1,264 +1,209 @@
 #!/system/bin/sh
-# STOP MODULE by Agung Developer - Halt All Performance Modules
-# Resets all FPS Injector settings to default | Watermark: © Agung Developer 2025
+# ♻️ Stop Module - Menghentikan semua modul performa (by Agung Developer)
 
-# --- STYLISH NOTIFICATION ---
-ICON_URL="https://png.pngtree.com/recommend-works/png-clipart/20250321/ourmid/pngtree-green-check-mark-icon-png-image_15808519.png"
-echo -e "\033[1;31m"
-cmd notification post -S bigtext -t 'FPS INJECTOR' 'Tag' '🛑 Initiating Full Module Shutdown by © Agung Developer 2025' --icon "$ICON_URL"
-echo -e "\033[0m"
+echo "🔓 Mengembalikan pengaturan aplikasi sistem..."
 
-# --- ASCII ART HEADER ---
-echo -e "\033[1;31m"
-echo "════════════════════════════════════════════"
-echo "   🛑  STOP MODULE by Agung Developer  🛑"
-echo "   © Agung Developer 2025 - Reset Master!"
-echo "════════════════════════════════════════════"
-echo -e "\033[0m"
-sleep 1
+# WHITELIST: Jangan disentuh
+whitelist="com.android.systemui com.google.android.gms com.android.settings com.android.vending"
 
-# --- DEVICE & HARDWARE INFO ---
-echo -e "\033[1;34m"
-echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"
-echo "┃        DEVICE & HARDWARE STATUS          ┃"
-echo "┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫"
-echo "┃ 📱 Device: $(getprop ro.product.manufacturer) $(getprop ro.product.model)    ┃"
-echo "┃ ⚙️ CPU: $(getprop ro.board.platform)                  ┃"
-echo "┃ 🎮 GPU: $(getprop ro.hardware)                       ┃"
-echo "┃ 📲 Android: $(getprop ro.build.version.release)      ┃"
-echo "┃ 🔥 Thermal: $(cat /sys/class/thermal/thermal_zone0/temp)°C ┃"
-echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"
-echo -e "\033[0m"
+for a in $(cmd package list packages -s | cut -d ":" -f2); do
+  echo "$whitelist" | grep -q "$a" && echo "⏩ Skip $a (whitelist)" && continue
+  cmd appops set $a RUN_IN_BACKGROUND allow
+  cmd appops set $a START_FOREGROUND allow
+  cmd appops set $a INSTANT_APP_START_FOREGROUND allow
+  cmd appops set $a WAKE_LOCK allow
+  cmd appops set $a RUN_ANY_IN_BACKGROUND allow
+  am set-standby-bucket $a active
+  echo "✅ $a dipulihkan"
+done
+
+echo "✅ Semua pengaturan aplikasi sistem telah dipulihkan!"
+cmd notification post -S bigtext -t 'FPS INJECTOR' 'Tag' 'Starting Configuration.'
+echo ""
+echo "█▓▒▒░░░FPS INJECTOR░░░▒▒▓█"
+echo ""
 sleep 0.5
+echo "DEVICE AND HARDWARE INFO"
+sleep 0.5
+echo "DEVICE $(getprop ro.product.brand)"
+sleep 0.5
+echo "MODEL $(getprop ro.product.model)"
+sleep 0.5
+echo "CPU $(getprop ro.hardware)"
+sleep 0.5
+echo "GPU $(getprop ro.hardware.egl)"
+sleep 0.5
+echo "SDK $(getprop ro.build.version.sdk)"
+echo ""
+echo "█▓▒▒░░░WELCOME TO UNINSTALL░░░▒▒▓█"
+echo ""
+sleep 0.5
+echo ""
+sleep 3
 
-# --- RESET ALL MODULES ---
-echo -e "\033[1;33m"
-echo "🔧 Initiating Full System Reset for All Modules..."
-echo -e "\033[0m"
-
-# Reset Frame Rate Controller
 (
-  settings reset system power.dfps.level
-  settings reset system disable_idle_fps
-  settings reset system fps.idle_control
-  settings reset system metadata_dynfps.disable
-  settings reset system display.disable_dynamic_fps
-  settings reset system display.low_framerate_limit
-  settings reset system display.refresh_rate
-  settings reset system display.enable_optimal_refresh_rate
-  settings reset system display.idle_time
-  settings reset global dfps.enable
-  settings reset global smart_dfps.enable
-  settings reset global smart_dfps.idle_fps
-  settings reset global display.idle_default_fps
-  setprop debug.mediatek_high_frame_rate_multiple_display_mode ""
-  setprop debug.mediatek_high_frame_rate_sf_set_big_core_fps_threshold ""
-  settings reset global tran_refresh_rate_video_detector.support
-  settings reset global tran_default_auto_refresh.support
-  settings reset global tran_default_refresh_mode
-  settings reset global tran_120hz_refresh_rate.not_support
-  settings reset global tran_custom_refresh_rate_config.support
-  settings reset global transsion.frame_override.support
-  settings reset global transsion.tran_refresh_rate.support
-  setprop debug.sf.perf_mode 0
-  setprop debug.sf.latch_unsignaled 0
-  setprop debug.sf.high_fps_early_phase_offset_ns ""
-  setprop debug.sf.high_fps_late_app_phase_offset_ns ""
-  setprop persist.sys.surfaceflinger.idle_reduce_framerate_enable ""
-  setprop debug.hwui.refresh_rate ""
-  setprop debug.hwui.disable_vsync false
-  setprop debug.performance.profile 0
-  setprop debug.perf.tuning 0
-  setprop persist.sys.gpu_perf_mode 0
-  setprop debug.mtk.powerhal.hint.bypass ""
-  settings reset system user_refresh_rate
-  settings reset system fps_limit
-  settings reset system max_refresh_rate_for_ui
-  settings reset system max_refresh_rate_for_gaming
-  settings reset system min_refresh_rate
-  settings reset system max_refresh_rate
-  settings reset system peak_refresh_rate
-  settings reset system thermal_limit_refresh_rate
-  settings reset system NV_FPSLIMIT
-  settings reset secure refresh_rate_mode
-  settings reset system display_min_refresh_rate
+# Reset semua pengaturan
+cmd display set-match-content-frame-rate-pref 0
+settings delete system power.dfps.level
+settings delete system disable_idle_fps
+settings delete system disable_idle_fps.threshold
+settings delete system fps.idle_control
+settings delete system metadata_dynfps.disabel
+settings delete system enable_dpps_dynamic_fps
+settings delete system display.disable_dynamic_fps
+settings delete system display.disable_metadata_dynamic_fps
+settings delete system display.low_framerate_limit
+settings delete system display.defer_fps_frame_count
+settings delete system display.refresh_rate
+settings delete system display.large_comp_hint_fps
+settings delete system display.enable_pref_hint_for_low_fps
+settings delete system display.enable_optimal_refresh_rate
+settings delete system display.enable_idle_content_fps_hint
+settings delete system display.refresh_rate_changeable
+settings delete system display.disable_mitigated_fps
+settings delete system display.idle_time
+settings delete system display.idle_time_inactive
+settings delete global dfps.enable
+settings delete global smart_dfps.enable
+settings delete global fps.switch.thermal
+settings delete global fps.switch.default
+settings delete global smart_dfps.idle_fps
+settings delete global display.idle_default_fps
+settings delete global smart_dfps.app_switch_fps
+settings delete global display.fod_monitor_default_fps
+setprop debug.mediatek_high_frame_rate_multiple_display_mode ""
+setprop debug.mediatek_high_frame_rate_sf_set_big_core_fps_threshold ""
+settings delete global tran_refresh_rate_video_detector.support
+settings delete global tran_default_auto_refresh.support
+settings delete global tran_default_refresh_mode
+settings delete global tran_low_battery_60hz_refresh_rate.support
+settings delete global tran_90hz_refresh_rate.not_support
+settings delete system surfaceflinger.idle_reduce_framerate_enable
+settings delete global tran_custom_refresh_rate_config.support
+settings delete global transsion.frame_override.support
+settings delete global transsion.tran_refresh_rate.support
+setprop debug.sys.display.fps ""
+setprop debug.sys.display_refresh_rate ""
+setprop debug.sys.game.minfps ""
+setprop debug.sys.game.maxfps ""
+setprop debug.sys.game.minframerate ""
+setprop debug.sys.game.maxframerate ""
+setprop debug.sys.min_refresh_rate ""
+setprop debug.sys.max_refresh_rate ""
+setprop debug.sys.peak_refresh_rate ""
+setprop debug.sys.sf.fps ""
+setprop debug.sys.smartfps ""
+setprop debug.sys.display.min_refresh_rate ""
+setprop debug.sys.vsync_optimization_enable ""
+setprop debug.sys.hwui.dyn_vsync ""
+setprop debug.sys.vsync ""
+setprop debug.sys.hwui.fps_mode ""
+setprop debug.sys.first.frame.accelerates ""
+setprop debug.sys.fps_unlock_allowed ""
+setprop debug.sys.display.max_fps ""
+setprop debug.sys.video.max.fps ""
+setprop debug.sys.surfaceflinger.idle_reduce_framerate_enable ""
+settings delete global refresh_rate_mode
+settings delete global refresh_rate_switching_type
+settings delete global refresh_rate_force_high
+setprop debug.hwui.refresh_rate ""
+setprop debug.sf.perf_mode ""
+settings delete global surface_flinger.use_content_detection_for_refresh_rate
+settings delete global media.recorder-max-base-layer-fps
+settings delete global vendor.fps.switch.default
+settings delete global vendor.display.default_fps
+settings delete global refresh.active
+settings delete system vendor.disable_idle_fps
+settings delete system vendor.display.idle_default_fps
+settings delete system vendor.display.enable_optimize_refresh
+settings delete system vendor.display.video_or_camera_fps.support
+settings delete system game_driver_min_frame_rate
+settings delete system game_driver_max_frame_rate
+settings delete system game_driver_power_saving_mode
+settings delete system game_driver_frame_skip_enable
+settings delete system game_driver_vsync_enable
+settings delete system game_driver_gpu_mode
+settings delete system game_driver_fps_limit
+setprop debug.hwui.refresh_rate ""
+setprop debug.sf.set_idle_timer_ms ""
+setprop debug.sf.latch_unsignaled ""
+setprop debug.sf.high_fps_early_phase_offset_ns ""
+setprop debug.sf.high_fps_late_app_phase_offset_ns ""
+setprop debug.graphics.game_default_frame_rate ""
+setprop debug.graphics.game_default_frame_rate.disabled ""
+setprop persist.sys.gpu_perf_mode ""
+setprop debug.mtk.powerhal.hint.bypass ""
+setprop persist.sys.surfaceflinger.idle_reduce_framerate_enable ""
+setprop sys.surfaceflinger.idle_reduce_framerate_enable ""
+setprop debug.sf.perf_mode ""
+setprop debug.hwui.disable_vsync ""
+setprop debug.performance.profile ""
+setprop debug.perf.tuning ""
+settings delete system user_refresh_rate
+settings delete system fps_limit
+settings delete system max_refresh_rate_for_ui
+settings delete system hwui_refresh_rate
+settings delete system display_refresh_rate
+settings delete system max_refresh_rate_for_gaming
+settings put system peak_refresh_rate 60
+settings delete system thermal_limit_refresh_rate
+settings delete system max_refresh_rate
+settings delete system min_refresh_rate
+echo powersave > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+setprop persist.sys.cpu.boost 0
+echo 0 > /sys/class/kgsl/kgsl-3d0/devfreq/governor
+setprop debug.gpu.perf_mode 0
+setprop persist.sys.gpu_perf_mode 0
+sync
+echo 0 > /proc/sys/vm/drop_caches
+setprop persist.sys.lowmemorykiller 1
+echo 0 > /proc/sys/net/ipv4/tcp_timestamps
+setprop net.tcp.delack 1
+setprop persist.sys.net.boost 0
+settings put global wifi_scan_always_enabled 1
+settings put global mobile_data_always_on 1
+settings put system game_mode 0
+setprop debug.game.perf_mode 0
+setprop persist.sys.game_mode 0
+echo deadline > /sys/block/mmcblk0/queue/scheduler
+setprop persist.sys.storage.optimize 0
+echo 0 > /proc/sys/kernel/sched_tunable_scaling
+setprop persist.sys.sched.optimize 0
+setprop debug.sys.lag_reducer 0
+echo 0 > /proc/sys/vm/swappiness
+setprop persist.sys.memory.compress 0
+echo deadline > /sys/block/mmcblk0/queue/scheduler
+setprop persist.sys.io.optimize 0
+setprop persist.sys.power.mode powersave
+settings put global power_mode 0
+setprop persist.sys.process.manager 0
+settings put system touch_sensitivity 0
+setprop persist.sys.touch.sensitivity 0
+setprop persist.sys.audio.enhance 0
+settings put system sound_effects_enabled 0
+setprop debug.audio.hifi 0
+setprop persist.sys.boot.optimize 0
+settings put global boot_animation 1
+setprop persist.sys.log.clear 0
+setprop persist.sys.vibration 1
+settings put system vibrate_on_touch 1
+setprop persist.sys.sensor.optimize 0
+settings put global max_cached_processes 128
+setprop persist.sys.background.limit 0
 ) > /dev/null 2>&1 &
 
-# Reset Thermal Controller
-(
-  echo 1 > /sys/class/thermal/thermal_zone0/mode
-  echo "enabled" > /sys/class/thermal/thermal_zone0/policy
-  echo 1 > /sys/module/msm_thermal/parameters/enabled
-  settings put global low_power 1
-  settings put global low_power_mode 1
-  echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-) > /dev/null 2>&1 &
-
-# Reset CPU Optimizer
-(
-  for cpu_gov_path in /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor; do [ -f "$cpu_gov_path" ] && echo "ondemand" > "$cpu_gov_path"; done
-  for cpu_max_freq_path in /sys/devices/system/cpu/cpu*/cpufreq/scaling_max_freq; do [ -f "$cpu_max_freq_path" ] && echo 0 > "$cpu_max_freq_path"; done
-  setprop debug.performance.profile 0
-) > /dev/null 2>&1 &
-
-# Reset GPU Enhancer
-(
-  echo "ondemand" > /sys/class/kgsl/kgsl-3d0/devfreq/governor 2>/dev/null
-  echo 0 > /sys/class/kgsl/kgsl-3d0/force_bus_on
-  echo 0 > /sys/class/kgsl/kgsl-3d0/force_clk_on
-  echo 0 > /sys/class/kgsl/kgsl-3d0/force_pw_on
-  setprop persist.sys.gpu_perf_mode 0
-) > /dev/null 2>&1 &
-
-# Reset RAM Cleaner
-(
-  echo 0 > /proc/sys/vm/drop_caches
-  am broadcast -a android.intent.action.BOOT_COMPLETED
-) > /dev/null 2>&1 &
-
-# Reset Battery Saver
-(
-  settings put global low_power 1
-  settings put global low_power_mode 1
-  echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-) > /dev/null 2>&1 &
-
-# Reset Network Booster
-(
-  setprop net.tcp.buffersize.wifi ""
-  settings put global mobile_data_always_on 0
-  setprop net.rmnet0.dns1 ""
-) > /dev/null 2>&1 &
-
-# Reset Game Mode
-(
-  setprop debug.performance.profile 0
-  echo 1 > /sys/module/lowmemorykiller/parameters/enable_lmk
-  settings reset system max_refresh_rate
-) > /dev/null 2>&1 &
-
-# Reset Storage Optimizer
-(
-  echo 0 > /proc/sys/vm/drop_caches
-  echo 128 > /sys/block/mmcblk0/queue/read_ahead_kb
-) > /dev/null 2>&1 &
-
-# Reset Anti-Lag
-(
-  echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-  echo 1000000 > /sys/kernel/sched/sched_latency_ns
-  setprop debug.performance.profile 0
-) > /dev/null 2>&1 &
-
-# Reset Memory Compressor
-(
-  echo 60 > /proc/sys/vm/swappiness
-  echo 100 > /proc/sys/vm/vfs_cache_pressure
-  echo 0 > /proc/sys/vm/drop_caches
-) > /dev/null 2>&1 &
-
-# Reset IO Tuner
-(
-  echo "cfq" > /sys/block/mmcblk0/queue/scheduler
-  echo 128 > /sys/block/mmcblk0/queue/read_ahead_kb
-  echo 64 > /sys/block/mmcblk0/queue/nr_requests
-) > /dev/null 2>&1 &
-
-# Reset Power Mode
-(
-  settings put global powersaving_mode_enabled 1
-  echo 0 > /sys/module/cpu_boost/parameters/input_boost_freq
-  setprop debug.performance.profile 0
-) > /dev/null 2>&1 &
-
-# Reset Process Manager
-(
-  am broadcast -a android.intent.action.BOOT_COMPLETED
-  pm trim-caches --reset
-  echo 1000000 > /proc/sys/kernel/sched_rt_runtime_us
-) > /dev/null 2>&1 &
-
-# Reset Display Tuner
-(
-  settings reset system display.refresh_rate
-  setprop debug.sf.latch_unsignaled 0
-  setprop debug.hwui.disable_vsync false
-) > /dev/null 2>&1 &
-
-# Reset Cache Clearer
-(
-  pm trim-caches --reset
-  echo 0 > /proc/sys/vm/drop_caches
-) > /dev/null 2>&1 &
-
-# Reset Kernel Tweaker
-(
-  echo 1 > /proc/sys/kernel/sched_schedstats
-  echo 2 > /proc/sys/kernel/perf_event_paranoid
-  setprop debug.performance.profile 0
-) > /dev/null 2>&1 &
-
-# Reset FPS Unlocker
-(
-  settings reset system max_refresh_rate
-  setprop debug.sf.high_fps_early_phase_offset_ns ""
-  setprop debug.hwui.refresh_rate ""
-) > /dev/null 2>&1 &
-
-# Reset Vibration Control
-(
-  settings put system haptic_feedback_enabled 1
-  echo 1 > /sys/class/timed_output/vibrator/enable
-) > /dev/null 2>&1 &
-
-# Reset Sensor Optimizer
-(
-  setprop debug.sensor.hal.period 100
-  echo 1 > /sys/class/sensors/sensor0/enable
-) > /dev/null 2>&1 &
-
-# Reset Background Limiter
-(
-  dumpsys deviceidle whitelist +$(cmd package list packages -3 | sed 's/package://g')
-  echo 1000000 > /proc/sys/kernel/sched_rt_runtime_us
-) > /dev/null 2>&1 &
-
-# Reset Audio Enhancer
-(
-  setprop audio.offload.enable 0
-  echo 0 > /sys/class/sound_control/headphone_gain
-  setprop audio.deep_buffer.media 0
-) > /dev/null 2>&1 &
-
-# Reset Boot Optimizer
-(
-  echo 1 > /sys/module/lowmemorykiller/parameters/enable_lmk
-  echo 1 > /sys/kernel/boot_boost
-  setprop persist.sys.boot_completed 0
-) > /dev/null 2>&1 &
-
-# Reset Log Cleaner
-(
-  logcat -c
-  dmesg -c
-  mkdir -p /data/system/dropbox
-) > /dev/null 2>&1 &
-
-# Reset Touch Sensitivity
-(
-  setprop debug.touch.sensitivity 1
-  echo 5 > /sys/class/touchscreen/touch_threshold
-) > /dev/null 2>&1 &
-
-# --- FINAL STATUS WITH STYLE ---
-echo -e "\033[1;32m"
-echo "════════════════════════════════════════════"
-echo "   🎉 RESET STATUS by Agung Developer 🎉"
-echo "   🛑 ALL MODULES DISABLED [✓]              "
-echo "   ✅ ALL SETTINGS RESET TO DEFAULT [✓]      "
-echo "   © Agung Developer 2025 - System Restored!"
-echo "   ⚠️ REBOOT DEVICE FOR STABILITY          "
-echo "════════════════════════════════════════════"
-echo -e "\033[0m"
-
-cmd notification post -S bigtext -t 'FPS INJECTOR' 'Tag' '🛑 ALL MODULES STOPPED by © Agung Developer 2025' --icon "$ICON_URL"
+echo "DELETE ALL STRING [✓]"
+echo ""
+sleep 0.5
+echo "‼️REBOOT DEVICE ‼️"
+echo ""
+sleep 0.5
+echo "DEV: Agung Developer"
+echo ""
+sleep 0.5
+echo "DONE UNINSTALL"
+echo ""
+sleep 0.5
+echo "█▓▒▒░░░THANKS FOR USING STOP MODULE ░░░▒▒▓█"
+echo ""
+cmd notification post -S bigtext -t 'FPS INJECTOR' 'Tag' 'SUCCESS: All Modules Stopped.'

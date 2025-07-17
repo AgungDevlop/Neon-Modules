@@ -1,15 +1,24 @@
 #!/system/bin/sh
-  # POWER MODE by Agung Developer - Adjust Power Settings
-  # Watermark: © Agung Developer 2025
-  GAME_PACKAGE="$1"
-  if [ -z "$GAME_PACKAGE" ]; then echo -e "\033[1;31mNo game package specified!\033[0m"; else echo -e "\033[1;32mOptimizing for game: $GAME_PACKAGE\033[0m"; dumpsys deviceidle whitelist +"$GAME_PACKAGE" > /dev/null 2>&1; echo "[✔] $GAME_PACKAGE optimized by Agung Developer!"; fi
-  ICON_URL="https://png.pngtree.com/recommend-works/png-clipart/20250321/ourmid/pngtree-green-check-mark-icon-png-image_15808519.png"
-  echo -e "\033[1;32m"cmd notification post -S bigtext -t 'FPS INJECTOR' 'Tag' "⚡ Starting Power Mode for $GAME_PACKAGE by © Agung Developer 2025" --icon "$ICON_URL"echo -e "\033[0m"
-  echo -e "\033[1;36m"echo "   ⚡  POWER MODE by Agung Developer  ⚡"echo "   © Agung Developer 2025 - Power Control!"echo -e "\033[0m"
-  (
-    settings put global powersaving_mode_enabled 0
-    echo 1 > /sys/module/cpu_boost/parameters/input_boost_freq
-    setprop debug.performance.profile 1
-  ) > /dev/null 2>&1 &
-  echo -e "\033[1;32m"echo "   🎉 POWER MODE ACTIVATED [✓]"echo "   © Agung Developer 2025"echo -e "\033[0m"
-  cmd notification post -S bigtext -t 'FPS INJECTOR' 'Tag' "⚡ POWER MODE ON for $GAME_PACKAGE by © Agung Developer 2025" --icon "$ICON_URL"
+# ⚡ Power Mode - Menyesuaikan mode daya (by Agung Developer)
+
+echo "⚡ Mengatur mode daya untuk performa..."
+
+(
+# Mengatur mode performa tinggi
+echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+setprop persist.sys.power.mode performance
+settings put global power_mode 1
+) > /dev/null 2>&1 &
+
+echo "✅ Mode daya diatur untuk performa tinggi."
+echo ""
+sleep 0.5
+echo "DEV: Agung Developer"
+echo ""
+sleep 0.5
+echo "THANKS FOR USING"
+echo ""
+sleep 0.5
+echo "█▓▒▒░░░THANKS FOR USING POWER MODE ░░░▒▒▓█"
+echo ""
+cmd notification post -S bigtext -t 'FPS INJECTOR' 'Tag' 'SUCCESS: Power Mode Activated.'
