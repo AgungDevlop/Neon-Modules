@@ -4,12 +4,12 @@
 
 # --- STYLISH NOTIFICATION ---
 ICON_URL="https://png.pngtree.com/recommend-works/png-clipart/20250321/ourmid/pngtree-green-check-mark-icon-png-image_15808519.png"
-echo -e "\033[1;31m" # Red text for stop action
+echo -e "\033[1;31m"
 cmd notification post -S bigtext -t 'FPS INJECTOR' 'Tag' '🛑 Initiating Full Module Shutdown by © Agung Developer 2025' --icon "$ICON_URL"
 echo -e "\033[0m"
 
 # --- ASCII ART HEADER ---
-echo -e "\033[1;31m" # Red text
+echo -e "\033[1;31m"
 echo "════════════════════════════════════════════"
 echo "   🛑  STOP MODULE by Agung Developer  🛑"
 echo "   © Agung Developer 2025 - Reset Master!"
@@ -18,7 +18,7 @@ echo -e "\033[0m"
 sleep 1
 
 # --- DEVICE & HARDWARE INFO ---
-echo -e "\033[1;34m" # Blue text
+echo -e "\033[1;34m"
 echo "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓"
 echo "┃        DEVICE & HARDWARE STATUS          ┃"
 echo "┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫"
@@ -27,35 +27,61 @@ echo "┃ ⚙️ CPU: $(getprop ro.board.platform)                  ┃"
 echo "┃ 🎮 GPU: $(getprop ro.hardware)                       ┃"
 echo "┃ 📲 Android: $(getprop ro.build.version.release)      ┃"
 echo "┃ 🔥 Thermal: $(cat /sys/class/thermal/thermal_zone0/temp)°C ┃"
-echo "┃ 🔰 Kernel: $(uname -r)                              ┃"
 echo "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"
 echo -e "\033[0m"
 sleep 0.5
 
 # --- RESET ALL MODULES ---
-echo -e "\033[1;33m" # Yellow text
+echo -e "\033[1;33m"
 echo "🔧 Initiating Full System Reset for All Modules..."
 echo -e "\033[0m"
 
 # Reset Frame Rate Controller
 (
-  settings reset system display.refresh_rate
-  settings reset system max_refresh_rate
-  settings reset system min_refresh_rate
-  settings reset system user_refresh_rate
-  settings reset system display.low_framerate_limit
+  settings reset system power.dfps.level
   settings reset system disable_idle_fps
   settings reset system fps.idle_control
   settings reset system metadata_dynfps.disable
   settings reset system display.disable_dynamic_fps
-  setprop debug.sf.perf_mode 0
-  setprop debug.sf.high_fps_early_phase_offset_ns ""
-  setprop debug.sf.latch_unsignaled 0
-  setprop debug.hwui.refresh_rate ""
-  setprop debug.hwui.disable_vsync false
-  setprop persist.sys.surfaceflinger.idle_reduce_framerate_enable ""
+  settings reset system display.low_framerate_limit
+  settings reset system display.refresh_rate
+  settings reset system display.enable_optimal_refresh_rate
+  settings reset system display.idle_time
+  settings reset global dfps.enable
+  settings reset global smart_dfps.enable
+  settings reset global smart_dfps.idle_fps
+  settings reset global display.idle_default_fps
   setprop debug.mediatek_high_frame_rate_multiple_display_mode ""
   setprop debug.mediatek_high_frame_rate_sf_set_big_core_fps_threshold ""
+  settings reset global tran_refresh_rate_video_detector.support
+  settings reset global tran_default_auto_refresh.support
+  settings reset global tran_default_refresh_mode
+  settings reset global tran_120hz_refresh_rate.not_support
+  settings reset global tran_custom_refresh_rate_config.support
+  settings reset global transsion.frame_override.support
+  settings reset global transsion.tran_refresh_rate.support
+  setprop debug.sf.perf_mode 0
+  setprop debug.sf.latch_unsignaled 0
+  setprop debug.sf.high_fps_early_phase_offset_ns ""
+  setprop debug.sf.high_fps_late_app_phase_offset_ns ""
+  setprop persist.sys.surfaceflinger.idle_reduce_framerate_enable ""
+  setprop debug.hwui.refresh_rate ""
+  setprop debug.hwui.disable_vsync false
+  setprop debug.performance.profile 0
+  setprop debug.perf.tuning 0
+  setprop persist.sys.gpu_perf_mode 0
+  setprop debug.mtk.powerhal.hint.bypass ""
+  settings reset system user_refresh_rate
+  settings reset system fps_limit
+  settings reset system max_refresh_rate_for_ui
+  settings reset system max_refresh_rate_for_gaming
+  settings reset system min_refresh_rate
+  settings reset system max_refresh_rate
+  settings reset system peak_refresh_rate
+  settings reset system thermal_limit_refresh_rate
+  settings reset system NV_FPSLIMIT
+  settings reset secure refresh_rate_mode
+  settings reset system display_min_refresh_rate
 ) > /dev/null 2>&1 &
 
 # Reset Thermal Controller
@@ -64,6 +90,7 @@ echo -e "\033[0m"
   echo "enabled" > /sys/class/thermal/thermal_zone0/policy
   echo 1 > /sys/module/msm_thermal/parameters/enabled
   settings put global low_power 1
+  settings put global low_power_mode 1
   echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 ) > /dev/null 2>&1 &
 
@@ -78,6 +105,8 @@ echo -e "\033[0m"
 (
   echo "ondemand" > /sys/class/kgsl/kgsl-3d0/devfreq/governor 2>/dev/null
   echo 0 > /sys/class/kgsl/kgsl-3d0/force_bus_on
+  echo 0 > /sys/class/kgsl/kgsl-3d0/force_clk_on
+  echo 0 > /sys/class/kgsl/kgsl-3d0/force_pw_on
   setprop persist.sys.gpu_perf_mode 0
 ) > /dev/null 2>&1 &
 
@@ -89,7 +118,8 @@ echo -e "\033[0m"
 
 # Reset Battery Saver
 (
-  settings put global low_power 0
+  settings put global low_power 1
+  settings put global low_power_mode 1
   echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 ) > /dev/null 2>&1 &
 
@@ -110,7 +140,6 @@ echo -e "\033[0m"
 # Reset Storage Optimizer
 (
   echo 0 > /proc/sys/vm/drop_caches
-  fstrim -v /data
   echo 128 > /sys/block/mmcblk0/queue/read_ahead_kb
 ) > /dev/null 2>&1 &
 
@@ -222,7 +251,7 @@ echo -e "\033[0m"
 ) > /dev/null 2>&1 &
 
 # --- FINAL STATUS WITH STYLE ---
-echo -e "\033[1;32m" # Green text
+echo -e "\033[1;32m"
 echo "════════════════════════════════════════════"
 echo "   🎉 RESET STATUS by Agung Developer 🎉"
 echo "   🛑 ALL MODULES DISABLED [✓]              "
@@ -232,5 +261,4 @@ echo "   ⚠️ REBOOT DEVICE FOR STABILITY          "
 echo "════════════════════════════════════════════"
 echo -e "\033[0m"
 
-# --- FINAL NOTIFICATION ---
 cmd notification post -S bigtext -t 'FPS INJECTOR' 'Tag' '🛑 ALL MODULES STOPPED by © Agung Developer 2025' --icon "$ICON_URL"
