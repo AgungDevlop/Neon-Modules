@@ -1,0 +1,12 @@
+[
+  {
+    "name": "FRAME RATECONTROLLER",
+    "desc": "description modules",
+    "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/frameracontroller.sh"
+  },
+  {
+    "name": "TERMAL CONTROLLER",
+    "desc": "description modules",
+    "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/termalcontroller.sh"
+  }
+]
