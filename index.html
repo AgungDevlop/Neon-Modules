@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Magisk Module</title> <script src="https://cdn.tailwindcss.com"></script>
+    <title>Neon Magisk Module</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&family=JetBrains+Mono:wght@400;700&display=stylesheet">
     <style>
@@ -11,7 +12,7 @@
             font-family: 'Exo 2', sans-serif;
             background: linear-gradient(135deg, #0a1320 0%, #1a2c3a 100%) fixed;
             color: #d4f1f9;
-            min-height: 10vh;
+            min-height: 100vh;
             overflow-x: hidden;
             padding-bottom: 80px;
         }
@@ -235,14 +236,16 @@
             <button id="sidebar-toggle" class="text-teal-400 hover:text-teal-300 sm:mr-4">
                 <i class="fas fa-bars text-lg"></i>
             </button>
-            <h1 class="text-2xl sm:text-3xl font-bold text-teal-300">Neon Magisk Module Dashboard</h1> <div class="flex items-center mt-4 sm:mt-0">
-                <div id="shizuku-status" class="flex items-center gap-2 px-3 py-1 bg-gray-800/50 border border-teal-500 rounded-full text-sm">
+            <h1 class="text-2xl sm:text-3xl font-bold text-teal-300">Neon Magisk Module Dashboard</h1>
+            <div class="flex items-center mt-4 sm:mt-0">
+                <div id="shizuku-status" class="flex items-center gap-2 px-3 py-1 bg-gray-800/50 border border-teal-500 округлый-full text-sm">
                     <i class="fas fa-circle-notch fa-spin" style="color: #6b7280;"></i>
                     <span>Checking Shizuku...</span>
                 </div>
             </div>
         </div>
 
+        <!-- Home Tab Content -->
         <div id="home-content" class="tab-content active">
             <div class="bg-gray-900/80 border border-teal-500 rounded-lg p-4 mb-4">
                 <div class="flex justify-between items-center cursor-pointer" id="device-info-toggle">
@@ -289,6 +292,7 @@
             </div>
         </div>
 
+        <!-- Performance Tab Content -->
         <div id="performance-content" class="tab-content">
             <div class="bg-gray-900/80 border border-teal-500 rounded-lg p-4 mb-4">
                 <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-bolt mr-2"></i>Performance Modules</h2>
@@ -303,6 +307,7 @@
             </div>
         </div>
 
+        <!-- Game Tab Content -->
         <div id="game-content" class="tab-content">
             <div class="bg-gray-900/80 border border-teal-500 rounded-lg p-4 mb-4">
                 <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-gamepad mr-2"></i>Game Optimization</h2>
@@ -422,7 +427,7 @@
                 '\x1B[1;33m': '<span class="ansi-yellow">',
                 '\x1B[0m': '</span>'
             };
-            let result = text.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m]);
+            let result = text.replace(/[&<>"']/g, m => ({ '&': '&', '<': '<', '>': '>', '"': '"', "'": '\'' })[m]);
             for (const [ansi, html] of Object.entries(ansiMap)) {
                 result = result.replace(new RegExp(ansi.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'), 'g'), html);
             }
@@ -491,7 +496,8 @@
             try {
                 if (window.Android?.checkFileExists) {
                     const fileName = moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-                    const exists = await window.Android.checkFileExists(`/storage/emulated/0/Download/com.neon.magiskmodule/${fileName}`); if (exists && !downloadedModules.has(moduleName)) {
+                    const exists = await window.Android.checkFileExists(`/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`);
+                    if (exists && !downloadedModules.has(moduleName)) {
                         downloadedModules.add(moduleName);
                         localStorage.setItem("downloadedModules", JSON.stringify([...downloadedModules]));
                     } else if (!exists && downloadedModules.has(moduleName)) {
@@ -853,7 +859,8 @@
                 return;
             }
             const fileName = moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-            const modulePath = `/storage/emulated/0/Download/com.neon.magiskmodule/${fileName}`; const logId = generateRandomId();
+            const modulePath = `/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
+            const logId = generateRandomId();
             window.currentLogId = logId;
             window.currentOutput = "";
             if (moduleName !== "STOP MODULE" && moduleName !== "Stop Module") {
@@ -906,7 +913,8 @@
                 return;
             }
             const fileName = deviceName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-            const devicePath = `/storage/emulated/0/Download/com.neon.magiskmodule/${fileName}`; const logId = generateRandomId();
+            const devicePath = `/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
+            const logId = generateRandomId();
             window.currentLogId = logId;
             window.currentOutput = "";
             activeFakeDevices.add(deviceName);
@@ -971,7 +979,8 @@
             }
             const moduleName = "Restore Device";
             const fileName = "restoredevice.sh";
-            const modulePath = `/storage/emulated/0/Download/com.neon.magiskmodule/${fileName}`; const logId = generateRandomId();
+            const modulePath = `/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
+            const logId = generateRandomId();
             window.currentLogId = logId;
             window.currentOutput = "";
             if (!downloadedModules.has(moduleName)) {
@@ -1039,7 +1048,8 @@
                 reader.onload = async function(e) {
                     const fileContent = e.target.result;
                     const fileName = moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-                    const filePath = `/storage/emulated/0/Download/com.neon.magiskmodule/${fileName}`; if (window.Android?.saveCustomModule) {
+                    const filePath = `/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
+                    if (window.Android?.saveCustomModule) {
                         await window.Android.saveCustomModule(fileContent, filePath);
                         let runCommand = `sh ${filePath}`;
                         if (selectedGames.size > 0) {
@@ -1163,7 +1173,8 @@
                 const isStopModule = moduleName === "STOP MODULE" || moduleName === "Stop Module";
                 if ((switchElement && switchElement.checked) || (fpsSwitchElement && fpsSwitchElement.checked) || (checkboxElement && checkboxElement.checked) || isStopModule) {
                     const fileName = moduleName === "Restore Device" ? "restoredevice.sh" : moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-                    const modulePath = `/storage/emulated/0/Download/com.neon.magiskmodule/${fileName}`; let runCommand = `sh ${modulePath}`;
+                    const modulePath = `/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
+                    let runCommand = `sh ${modulePath}`;
                     if (selectedGames.size > 0 && !isStopModule && moduleName !== "Restore Device") {
                         for (const game of allGames) {
                             if (selectedGames.has(game.game)) {
@@ -1211,7 +1222,9 @@
             const timestamp = new Date().toLocaleString();
             const fileName = moduleName === "Restore Device" ? "restoredevice.sh" : moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
             const command = selectedGames.size > 0 && !moduleName.includes("STOP MODULE") && !moduleName.includes("Stop Module") && moduleName !== "Restore Device"
-                ? `sh /storage/emulated/0/Download/com.neon.magiskmodule/${fileName} ${[...selectedGames].map(game => allGames.find(g => g.game === game)?.command.match(/\+([a-zA-Z0-9.]+)/)?.[1] || '').join(' ')}` : `sh /storage/emulated/0/Download/com.neon.magiskmodule/${fileName}`; commandLogs.push({
+                ? `sh /storage/emulated/0/Download/com.neon.magisk.module/${fileName} ${[...selectedGames].map(game => allGames.find(g => g.game === game)?.command.match(/\+([a-zA-Z0-9.]+)/)?.[1] || '').join(' ')}`
+                : `sh /storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
+            commandLogs.push({
                 command: command.trim(),
                 output: window.currentOutput,
                 timestamp,
@@ -1224,7 +1237,7 @@
                 // Check if URL can be opened
                 const lastOpened = sessionStorage.getItem('lastUrlOpenTime');
                 const currentTime = Date.now();
-                const oneMinute = 30 * 1000; // 30 seconds
+                const oneMinute = 30 * 1000; // 1 minute in milliseconds
                 if (!lastOpened || (currentTime - parseInt(lastOpened)) > oneMinute) {
                     window.open('https://obqj2.com/4/9587058', '_blank');
                     sessionStorage.setItem('lastUrlOpenTime', currentTime.toString());
