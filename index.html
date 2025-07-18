@@ -14,6 +14,7 @@
             color: #d4f1f9;
             min-height: 100vh;
             overflow-x: hidden;
+            padding-bottom: 80px;
         }
 
         .bg-particles {
@@ -27,8 +28,9 @@
         .switch {
             position: relative;
             display: inline-block;
-            width: 48px;
-            height: 24px;
+            width: 36px;
+            height: 18px;
+            flex-shrink: 0;
         }
         .switch input {
             opacity: 0;
@@ -41,13 +43,13 @@
             inset: 0;
             background-color: #374151;
             transition: background-color 0.3s;
-            border-radius: 24px;
+            border-radius: 18px;
         }
         .slider:before {
             position: absolute;
             content: "";
-            height: 20px;
-            width: 20px;
+            height: 14px;
+            width: 14px;
             left: 2px;
             bottom: 2px;
             background-color: #d4f1f9;
@@ -58,7 +60,7 @@
             background-color: #26a69a;
         }
         input:checked + .slider:before {
-            transform: translateX(24px);
+            transform: translateX(18px);
         }
         input:disabled + .slider {
             background-color: #4b5563;
@@ -66,7 +68,7 @@
             opacity: 0.7;
         }
 
-        .modal, .confirmation-modal {
+        .modal, .confirmation-modal, .cmd-output-modal {
             display: none;
             position: fixed;
             inset: 0;
@@ -76,14 +78,14 @@
             z-index: 1000;
             overflow: auto;
         }
-        .modal-content, .confirmation-content {
+        .modal-content, .confirmation-content, .cmd-output-content {
             background: #0a1320;
             border: 1px solid #5e35b1;
             border-radius: 8px;
-            padding: 12px;
+            padding: 16px;
             width: 90%;
-            max-width: 360px;
-            max-height: 70vh;
+            max-width: 400px;
+            max-height: 80vh;
             overflow-y: auto;
             box-sizing: border-box;
             position: relative;
@@ -125,12 +127,12 @@
             font-size: 12px;
             white-space: pre-wrap;
             word-wrap: break-word;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-height: 40vh;
             overflow-y: auto;
             border: 1px solid #26a69a;
             box-sizing: border-box;
+            color: #d4f1f9;
+            line-height: 1.5;
+            max-height: 50vh;
         }
 
         .ansi-green { color: #26a69a; }
@@ -148,24 +150,81 @@
 
         #sidebar {
             transition: transform 0.3s ease-in-out;
+            transform: translateX(-100%);
         }
         #sidebar.open {
             transform: translateX(0);
         }
 
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #0a1320;
+            border-top: 1px solid #5e35b1;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 60px;
+            z-index: 20;
+            margin-top: 20px;
+        }
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            color: #d4f1f9;
+            transition: background-color 0.3s;
+        }
+        .nav-item.active {
+            background: #26a69a;
+            color: #0a1320;
+        }
+        .nav-item:hover {
+            background: #374151;
+        }
+
+        .tab-content {
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .tab-content.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .module-text-container {
+            flex-grow: 1;
+            flex-shrink: 1;
+            min-width: 0;
+            overflow: hidden;
+        }
+        .module-text-container p {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
         @media (max-width: 640px) {
-            .modal-content, .confirmation-content {
+            .modal-content, .confirmation-content, .cmd-output-content {
                 width: 95%;
                 max-width: 95%;
-                padding: 10px;
+                padding: 12px;
             }
             .cmd-output {
                 font-size: 11px;
-                max-height: 35vh;
+                max-height: 40vh;
             }
             .notification {
                 font-size: 12px;
                 padding: 6px 12px;
+            }
+            .bottom-nav {
+                height: 50px;
+            }
+            .nav-item {
+                padding: 8px;
             }
         }
     </style>
@@ -185,36 +244,82 @@
                 </div>
             </div>
         </div>
-        <div class="bg-gray-900/80 border border-teal-500 rounded-lg p-4 mb-4">
-            <div class="flex justify-between items-center cursor-pointer" id="device-info-toggle">
-                <h2 class="text-lg font-bold text-teal-300">Device Info</h2>
-                <i class="fas fa-chevron-down text-teal-400"></i>
-            </div>
-            <div id="device-info" class="dropdown-content text-gray-300"></div>
-        </div>
-        <div class="bg-gray-900/80 border border-teal-500 rounded-lg p-4 mb-4">
-            <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-cog mr-2"></i>Custom Module</h2>
-            <div id="custom-module-list">
-                <div class="flex justify-between items-center bg-gray-800/50 border-l-4 border-purple-600 p-3 rounded-lg mb-2">
-                    <span class="flex items-center gap-2">
-                        <i class="fas fa-cog text-teal-400"></i>
-                        <span>Using Custom Module</span>
-                    </span>
+
+        <!-- Home Tab Content -->
+        <div id="home-content" class="tab-content active">
+            <div class="bg-gray-900/80 border border-teal-500 rounded-lg p-4 mb-4">
+                <div class="flex justify-between items-center cursor-pointer" id="device-info-toggle">
+                    <h2 class="text-lg font-bold text-teal-300">Device Info</h2>
                     <div>
-                        <input type="file" id="custom-module-input" accept=".sh" class="hidden">
-                        <button id="custom-module-btn" class="px-4 py-2 bg-teal-500 text-gray-900 rounded-lg font-semibold hover:bg-teal-400">Select</button>
+                        <button id="refresh-device-info" class="text-teal-400 hover:text-teal-300 mr-2">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <i class="fas fa-chevron-down text-teal-400"></i>
+                    </div>
+                </div>
+                <div id="device-info" class="dropdown-content text-gray-300"></div>
+            </div>
+            <div class="bg-gray-900/80 border border-teal-500 rounded-lg p-4 mb-4">
+                <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-cog mr-2"></i>Custom Module</h2>
+                <div id="custom-module-list">
+                    <div class="flex justify-between items-center bg-gray-800/50 border-l-4 border-purple-600 p-3 rounded-lg mb-2">
+                        <span class="flex items-center gap-2">
+                            <i class="fas fa-cog text-teal-400"></i>
+                            <span>Using Custom Module</span>
+                        </span>
+                        <div>
+                            <input type="file" id="custom-module-input" accept=".sh" class="hidden">
+                            <button id="custom-module-btn" class="px-4 py-2 bg-teal-500 text-gray-900 rounded-lg font-semibold hover:bg-teal-400">Select</button>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="bg-gray-900/80 border border-teal-500 rounded-lg p-4 mb-4">
+                <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-mobile-alt mr-2"></i>Fake Device Modules</h2>
+                <div id="fake-device-items"></div>
+                <button id="restore-device-btn" class="w-full mt-2 px-4 py-2 bg-teal-500 text-gray-900 rounded-lg font-semibold hover:bg-teal-400">Restore Device</button>
+            </div>
+            <div class="bg-gray-900/80 border border-teal-500 rounded-lg p-4 mb-4">
+                <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-tachometer-alt mr-2"></i>FPS Modules</h2>
+                <div id="fps-module-items"></div>
+            </div>
+            <div class="bg-gray-900/80 border border-teal-500 rounded-lg p-4 mb-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-history mr-2"></i>Command Log</h2>
+                    <button id="clear-logs-btn" class="px-3 py-1 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-400">Clear All Logs</button>
+                </div>
+                <div id="log-list"></div>
+            </div>
         </div>
-        <div class="bg-gray-900/80 border border-teal-500 rounded-lg p-4 mb-4">
-            <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-cogs mr-2"></i>Modules</h2>
-            <div id="module-items"></div>
+
+        <!-- Performance Tab Content -->
+        <div id="performance-content" class="tab-content">
+            <div class="bg-gray-900/80 border border-teal-500 rounded-lg p-4 mb-4">
+                <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-bolt mr-2"></i>Performance Modules</h2>
+                <div id="module-items"></div>
+            </div>
+            <div class="bg-gray-900/80 border border-teal-500 rounded-lg p-4 mb-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-history mr-2"></i>Command Log</h2>
+                    <button id="clear-logs-btn-performance" class="px-3 py-1 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-400">Clear All Logs</button>
+                </div>
+                <div id="log-list"></div>
+            </div>
         </div>
-        <div id="cmd-output" class="cmd-output"></div>
-        <div class="bg-gray-900/80 border border-teal-500 rounded-lg p-4 mt-4">
-            <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-history mr-2"></i>Command Log</h2>
-            <div id="log-list"></div>
+
+        <!-- Game Tab Content -->
+        <div id="game-content" class="tab-content">
+            <div class="bg-gray-900/80 border border-teal-500 rounded-lg p-4 mb-4">
+                <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-gamepad mr-2"></i>Game Optimization</h2>
+                <div id="game-items"></div>
+            </div>
+            <div class="bg-gray-900/80 border border-teal-500 rounded-lg p-4 mb-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-history mr-2"></i>Command Log</h2>
+                    <button id="clear-logs-btn-game" class="px-3 py-1 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-400">Clear All Logs</button>
+                </div>
+                <div id="log-list"></div>
+            </div>
         </div>
     </div>
 
@@ -242,11 +347,31 @@
         </div>
     </div>
 
+    <div class="bottom-nav">
+        <div class="nav-item active" data-tab="home-content">
+            <i class="fas fa-home text-lg"></i>
+        </div>
+        <div class="nav-item" data-tab="performance-content">
+            <i class="fas fa-bolt text-lg"></i>
+        </div>
+        <div class="nav-item" data-tab="game-content">
+            <i class="fas fa-gamepad text-lg"></i>
+        </div>
+    </div>
+
     <div id="download-modal" class="modal">
         <div class="modal-content">
             <h2 id="modal-title" class="text-base font-bold text-teal-300 mb-2"><i class="fas fa-download mr-2"></i>Processing...</h2>
             <div class="progress-bar" id="modal-progress" style="width: 0%"></div>
             <p id="modal-status" class="mt-2 text-gray-300 text-xs"></p>
+        </div>
+    </div>
+
+    <div id="cmd-output-modal" class="cmd-output-modal">
+        <div class="cmd-output-content">
+            <h2 class="text-base font-bold text-teal-300 mb-2"><i class="fas fa-terminal mr-2"></i>Command Output</h2>
+            <pre id="cmd-output" class="cmd-output"></pre>
+            <button class="px-3 py-1 bg-teal-500 text-gray-900 rounded-lg font-semibold hover:bg-teal-400 mt-2 w-full" onclick="document.getElementById('cmd-output-modal').style.display='none'">Close</button>
         </div>
     </div>
 
@@ -302,16 +427,22 @@
                 '\x1B[1;33m': '<span class="ansi-yellow">',
                 '\x1B[0m': '</span>'
             };
-            let result = text.replace(/[&<>"']/g, m => ({ '&': '&', '<': '<', '>': '>', '"': '"', "'": '\x27' })[m]);
+            let result = text.replace(/[&<>"']/g, m => ({ '&': '&', '<': '<', '>': '>', '"': '"', "'": '\'' })[m]);
             for (const [ansi, html] of Object.entries(ansiMap)) {
                 result = result.replace(new RegExp(ansi.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'), 'g'), html);
             }
             return result;
         }
 
-        const MODULES_URL = "https://raw.githubusercontent.com/AgungDevlop/Viral/refs/heads/main/Modules.json";
+        const MODULES_URL = "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/Modules.json";
+        const FPS_MODULES_URL = "https://raw.githubusercontent.com/AgungDevlop/Viral/refs/heads/main/FpsSetting.json";
+        const FAKE_DEVICE_URL = "https://raw.githubusercontent.com/AgungDevlop/Viral/main/FakeDevice.json";
+        const GAME_URL = "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/Game.json";
+        const RESTORE_DEVICE_URL = "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/main/restoredevice.sh";
         const downloadedModules = new Set(JSON.parse(localStorage.getItem("downloadedModules") || "[]"));
         const activeModules = new Set(JSON.parse(localStorage.getItem("activeModules") || "[]"));
+        const activeFakeDevices = new Set(JSON.parse(localStorage.getItem("activeFakeDevices") || "[]"));
+        const selectedGames = new Set(JSON.parse(localStorage.getItem("selectedGames") || "[]"));
         let commandLogs = JSON.parse(localStorage.getItem("commandLogs") || "[]");
 
         async function loadAppVersion() {
@@ -383,6 +514,9 @@
         }
 
         let allModules = [];
+        let allFpsModules = [];
+        let allFakeDevices = [];
+        let allGames = [];
         async function loadModules() {
             try {
                 if (!allModules.length) {
@@ -398,76 +532,330 @@
                 for (const module of allModules) await checkModuleExists(module.name);
                 renderModules(allModules);
             } catch (error) {
-                console.error("Error loading modules:", error);
-                document.getElementById("module-items").innerHTML = '<p class="text-red-400 text-sm"><i class="fas fa-exclamation-circle mr-2"></i>Failed to load modules. Check your internet connection.</p>';
+                console.error("Error loading performance modules:", error);
+                document.getElementById("module-items").innerHTML = '<p class="text-red-400 text-sm"><i class="fas fa-exclamation-circle mr-2"></i>Failed to load performance modules. Check your internet connection.</p>';
+            }
+        }
+
+        async function loadFpsModules() {
+            try {
+                if (!allFpsModules.length) {
+                    let fpsModules = JSON.parse(localStorage.getItem("cachedFpsModules"));
+                    if (!fpsModules) {
+                        const response = await fetch(FPS_MODULES_URL, { cache: "no-store" });
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        fpsModules = await response.json();
+                        localStorage.setItem("cachedFpsModules", JSON.stringify(fpsModules));
+                    }
+                    allFpsModules = fpsModules;
+                }
+                for (const module of allFpsModules) await checkModuleExists(module.name);
+                renderFpsModules(allFpsModules);
+            } catch (error) {
+                console.error("Error loading FPS modules:", error);
+                document.getElementById("fps-module-items").innerHTML = '<p class="text-red-400 text-sm"><i class="fas fa-exclamation-circle mr-2"></i>Failed to load FPS modules. Check your internet connection.</p>';
+            }
+        }
+
+        async function loadFakeDevices() {
+            try {
+                if (!allFakeDevices.length) {
+                    let fakeDevices = JSON.parse(localStorage.getItem("cachedFakeDevices"));
+                    if (!fakeDevices) {
+                        const response = await fetch(FAKE_DEVICE_URL, { cache: "no-store" });
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        fakeDevices = await response.json();
+                        localStorage.setItem("cachedFakeDevices", JSON.stringify(fakeDevices));
+                    }
+                    allFakeDevices = fakeDevices;
+                }
+                for (const device of allFakeDevices) await checkModuleExists(device.name);
+                renderFakeDevices(allFakeDevices);
+            } catch (error) {
+                console.error("Error loading fake device modules:", error);
+                document.getElementById("fake-device-items").innerHTML = '<p class="text-red-400 text-sm"><i class="fas fa-exclamation-circle mr-2"></i>Failed to load fake device modules. Check your internet connection.</p>';
+            }
+        }
+
+        async function loadGames() {
+            try {
+                if (!allGames.length) {
+                    let games = JSON.parse(localStorage.getItem("cachedGames"));
+                    if (!games) {
+                        const response = await fetch(GAME_URL, { cache: "no-store" });
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        games = await response.json();
+                        localStorage.setItem("cachedGames", JSON.stringify(games));
+                    }
+                    allGames = games;
+                }
+                renderGames(allGames);
+            } catch (error) {
+                console.error("Error loading games:", error);
+                document.getElementById("game-items").innerHTML = '<p class="text-red-400 text-sm"><i class="fas fa-exclamation-circle mr-2"></i>Failed to load games. Check your internet connection.</p>';
             }
         }
 
         function renderModules(modules) {
             const moduleList = document.getElementById("module-items");
             moduleList.innerHTML = "";
-            modules.forEach(module => {
+            const stopModule = modules.find(module => module.name === "STOP MODULE");
+            const otherModules = modules.filter(module => module.name !== "STOP MODULE");
+            const sortedModules = stopModule ? [stopModule, ...otherModules] : otherModules;
+            sortedModules.forEach((module, index) => {
                 const isActive = activeModules.has(module.name);
                 const isDownloaded = downloadedModules.has(module.name);
                 const moduleItem = document.createElement("div");
-                moduleItem.className = "bg-gray-800/50 border-l-4 border-purple-600 p-3 rounded-lg mb-2";
-                if (module.name === "Stop Module") {
+                moduleItem.className = "bg-gray-800/50 border-l-4 border-purple-600 p-2 rounded-lg mb-1";
+                if (index === 0 && module.name === "STOP MODULE") {
                     moduleItem.innerHTML = `
-                        <button id="btn-${module.name.replace(/[^a-zA-Z0-9]/g, '')}" 
-                                class="w-full px-4 py-2 bg-teal-500 text-gray-900 rounded-lg font-semibold hover:bg-teal-400 ${isActive ? 'opacity-50 cursor-not-allowed' : ''}"
-                                ${isActive ? 'disabled' : ''}
-                                onclick="handleModuleAction('${module.name}', '${module.url}')">
-                            Stop Module
+                        <button id="btn-remove-modules" 
+                                class="w-full px-4 py-2 bg-teal-500 text-gray-900 rounded-lg font-semibold hover:bg-teal-400"
+                                onclick="handleModuleAction('STOP MODULE', '${module.url}')">
+                            Remove Modules
                         </button>
                     `;
                 } else {
                     moduleItem.className += " flex justify-between items-center";
                     moduleItem.innerHTML = `
-                        <span class="flex items-center gap-2">
-                            <i class="fas fa-microchip text-teal-400"></i>
-                            <span>${module.name}</span>
-                        </span>
+                        <div class="module-text-container flex-grow flex flex-col">
+                            <span class="flex items-center gap-2 text-sm">
+                                <i class="fas fa-microchip text-teal-400 text-sm"></i>
+                                <span>${module.name}</span>
+                            </span>
+                            <p class="text-[10px] text-gray-300">${module.desc}</p>
+                        </div>
                         <label class="switch">
-                            <input type="checkbox" id="switch-${module.name.replace(/[^a-zA-Z0-9]/g, '')}" ${isActive ? 'checked' : ''}>
+                            <input type="checkbox" id="switch-${module.name.replace(/[^a-zA-Z0-9]/g, '')}" ${isActive ? 'checked' : ''} ${module.name === "STOP MODULE" ? 'disabled' : ''}>
                             <span class="slider"></span>
                         </label>
                     `;
-                    moduleList.appendChild(moduleItem);
-                    const switchElement = document.getElementById(`switch-${module.name.replace(/[^a-zA-Z0-9]/g, '')}`);
+                    const switchElement = moduleItem.querySelector(`#switch-${module.name.replace(/[^a-zA-Z0-9]/g, '')}`);
                     if (switchElement) {
                         switchElement.addEventListener("change", async (e) => {
                             if (e.target.checked) {
-                                if (activeModules.size > 0) {
-                                    showNotification("Only one module can be active at a time. Please disable the active module first.");
-                                    e.target.checked = false;
-                                    return;
-                                }
                                 const shizukuRunning = await checkShizukuStatus();
                                 if (!shizukuRunning) {
                                     showNotification("Shizuku is not running. Please start Shizuku and try again.");
                                     e.target.checked = false;
                                     return;
                                 }
-                                handleModuleAction(module.name, module.url);
+                                await handleModuleAction(module.name, module.url);
+                            } else {
+                                if (await showConfirmation(`Are you sure you want to disable ${module.name}?`)) {
+                                    activeModules.delete(module.name);
+                                    localStorage.setItem("activeModules", JSON.stringify([...activeModules]));
+                                    renderModules(allModules);
+                                } else {
+                                    e.target.checked = true;
+                                }
                             }
                         });
                     }
                 }
                 moduleList.appendChild(moduleItem);
             });
+            if (stopModule && stopModule.name === "STOP MODULE") {
+                const removeModulesBtn = document.getElementById("btn-remove-modules");
+                if (removeModulesBtn) {
+                    removeModulesBtn.addEventListener("click", async () => {
+                        const shizukuRunning = await checkShizukuStatus();
+                        if (!shizukuRunning) {
+                            showNotification("Shizuku is not running. Please start Shizuku and try again.");
+                            return;
+                        }
+                        await handleModuleAction("STOP MODULE", stopModule.url);
+                        // Disable all switches in the performance tab
+                        const switches = document.querySelectorAll('#module-items .switch input');
+                        switches.forEach(switchElement => {
+                            switchElement.checked = false;
+                            switchElement.disabled = true;
+                        });
+                        // Clear active modules
+                        activeModules.clear();
+                        localStorage.setItem("activeModules", JSON.stringify([...activeModules]));
+                        showNotification("All performance modules have been disabled.");
+                    });
+                }
+            }
+        }
+
+        function renderFpsModules(modules) {
+            const fpsModuleList = document.getElementById("fps-module-items");
+            fpsModuleList.innerHTML = "";
+            const stopModule = modules.find(module => module.name === "Stop Module");
+            const otherModules = modules.filter(module => module.name !== "Stop Module");
+            const sortedModules = stopModule ? [stopModule, ...otherModules] : otherModules;
+            sortedModules.forEach((module, index) => {
+                const isActive = activeModules.has(module.name);
+                const isDownloaded = downloadedModules.has(module.name);
+                const moduleItem = document.createElement("div");
+                moduleItem.className = "bg-gray-800/50 border-l-4 border-purple-600 p-2 rounded-lg mb-1";
+                if (index === 0 && module.name === "Stop Module") {
+                    moduleItem.innerHTML = `
+                        <button id="btn-remove-fps-modules" 
+                                class="w-full px-4 py-2 bg-teal-500 text-gray-900 rounded-lg font-semibold hover:bg-teal-400"
+                                onclick="handleModuleAction('Stop Module', '${module.url}')">
+                            Remove FPS Modules
+                        </button>
+                    `;
+                } else {
+                    moduleItem.className += " flex justify-between items-center";
+                    moduleItem.innerHTML = `
+                        <div class="module-text-container flex-grow flex flex-col">
+                            <span class="flex items-center gap-2 text-sm">
+                                <i class="fas fa-tachometer-alt text-teal-400 text-sm"></i>
+                                <span>${module.name}</span>
+                            </span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="fps-switch-${module.name.replace(/[^a-zA-Z0-9]/g, '')}" ${isActive ? 'checked' : ''}>
+                            <span class="slider"></span>
+                        </label>
+                    `;
+                    const switchElement = moduleItem.querySelector(`#fps-switch-${module.name.replace(/[^a-zA-Z0-9]/g, '')}`);
+                    if (switchElement) {
+                        switchElement.addEventListener("change", async (e) => {
+                            if (e.target.checked) {
+                                const shizukuRunning = await checkShizukuStatus();
+                                if (!shizukuRunning) {
+                                    showNotification("Shizuku is not running. Please start Shizuku and try again.");
+                                    e.target.checked = false;
+                                    return;
+                                }
+                                await handleModuleAction(module.name, module.url);
+                            } else {
+                                if (await showConfirmation(`Are you sure you want to disable ${module.name}?`)) {
+                                    activeModules.delete(module.name);
+                                    localStorage.setItem("activeModules", JSON.stringify([...activeModules]));
+                                    renderFpsModules(allFpsModules);
+                                } else {
+                                    e.target.checked = true;
+                                }
+                            }
+                        });
+                    }
+                }
+                fpsModuleList.appendChild(moduleItem);
+            });
+        }
+
+        function renderFakeDevices(fakeDevices) {
+            const fakeDeviceList = document.getElementById("fake-device-items");
+            fakeDeviceList.innerHTML = "";
+            fakeDevices.forEach(device => {
+                if (device.name === "Restore Device") return;
+                const isActive = activeFakeDevices.has(device.name);
+                const isDownloaded = downloadedModules.has(device.name);
+                const deviceItem = document.createElement("div");
+                deviceItem.className = "bg-gray-800/50 border-l-4 border-purple-600 p-2 rounded-lg mb-1 flex justify-between items-center";
+                deviceItem.innerHTML = `
+                    <div class="module-text-container flex-grow flex flex-col">
+                        <span class="flex items-center gap-2 text-sm">
+                            <i class="fas fa-mobile-alt text-teal-400 text-sm"></i>
+                            <span>${device.name}</span>
+                        </span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="fake-device-${device.name.replace(/[^a-zA-Z0-9]/g, '')}" ${isActive ? 'checked' : ''}>
+                        <span class="slider"></span>
+                    </label>
+                `;
+                fakeDeviceList.appendChild(deviceItem);
+                const checkboxElement = document.getElementById(`fake-device-${device.name.replace(/[^a-zA-Z0-9]/g, '')}`);
+                if (checkboxElement) {
+                    checkboxElement.addEventListener("change", async (e) => {
+                        if (e.target.checked) {
+                            if (activeFakeDevices.size > 0) {
+                                showNotification("Only one fake device can be active at a time. Please disable the active fake device first.");
+                                e.target.checked = false;
+                                return;
+                            }
+                            const shizukuRunning = await checkShizukuStatus();
+                            if (!shizukuRunning) {
+                                showNotification("Shizuku is not running. Please start Shizuku and try again.");
+                                e.target.checked = false;
+                                return;
+                            }
+                            await handleFakeDeviceAction(device.name, device.url);
+                        } else {
+                            if (await showConfirmation(`Are you sure you want to disable ${device.name}?`)) {
+                                activeFakeDevices.delete(device.name);
+                                localStorage.setItem("activeFakeDevices", JSON.stringify([...activeFakeDevices]));
+                                renderFakeDevices(allFakeDevices);
+                                loadDeviceInfo();
+                            } else {
+                                e.target.checked = true;
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        function renderGames(games) {
+            const gameList = document.getElementById("game-items");
+            gameList.innerHTML = "";
+            games.forEach(game => {
+                const isSelected = selectedGames.has(game.game);
+                const gameItem = document.createElement("div");
+                gameItem.className = "bg-gray-800/50 border-l-4 border-purple-600 p-2 rounded-lg mb-1 flex justify-between items-center";
+                gameItem.innerHTML = `
+                    <div class="module-text-container flex-grow flex flex-col">
+                        <span class="flex items-center gap-2 text-sm">
+                            <i class="fas fa-gamepad text-teal-400 text-sm"></i>
+                            <span>${game.game}</span>
+                        </span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="game-${game.game.replace(/[^a-zA-Z0-9]/g, '')}" ${isSelected ? 'checked' : ''}>
+                        <span class="slider"></span>
+                    </label>
+                `;
+                gameList.appendChild(gameItem);
+                const checkboxElement = document.getElementById(`game-${game.game.replace(/[^a-zA-Z0-9]/g, '')}`);
+                if (checkboxElement) {
+                    checkboxElement.addEventListener("change", async (e) => {
+                        if (e.target.checked) {
+                            selectedGames.add(game.game);
+                            localStorage.setItem("selectedGames", JSON.stringify([...selectedGames]));
+                            const shizukuRunning = await checkShizukuStatus();
+                            if (!shizukuRunning) {
+                                showNotification("Shizuku is not running. Please start Shizuku and try again.");
+                                e.target.checked = false;
+                                selectedGames.delete(game.game);
+                                localStorage.setItem("selectedGames", JSON.stringify([...selectedGames]));
+                                return;
+                            }
+                            await handleGameAction(game.game, game.command);
+                        } else {
+                            if (await showConfirmation(`Are you sure you want to disable optimization for ${game.game}?`)) {
+                                selectedGames.delete(game.game);
+                                localStorage.setItem("selectedGames", JSON.stringify([...selectedGames]));
+                            } else {
+                                e.target.checked = true;
+                            }
+                        }
+                    });
+                }
+            });
         }
 
         async function handleModuleAction(moduleName, moduleUrl) {
-            if (activeModules.has(moduleName)) {
+            if (activeModules.has(moduleName) && moduleName !== "STOP MODULE" && moduleName !== "Stop Module") {
                 showNotification(`${moduleName} is already active.`);
                 const switchElement = document.getElementById(`switch-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
-                if (switchElement) switchElement.checked = false;
+                const fpsSwitchElement = document.getElementById(`fps-switch-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                if (switchElement) switchElement.checked = true;
+                if (fpsSwitchElement) fpsSwitchElement.checked = true;
                 return;
             }
             if (!window.Android) {
                 showNotification("This feature is only available in the Android application.");
                 const switchElement = document.getElementById(`switch-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                const fpsSwitchElement = document.getElementById(`fps-switch-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
                 if (switchElement) switchElement.checked = false;
+                if (fpsSwitchElement) fpsSwitchElement.checked = false;
                 return;
             }
             const fileName = moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
@@ -475,21 +863,136 @@
             const logId = generateRandomId();
             window.currentLogId = logId;
             window.currentOutput = "";
-            document.getElementById("cmd-output").innerHTML = "";
-            activeModules.add(moduleName);
-            localStorage.setItem("activeModules", JSON.stringify([...activeModules]));
+            if (moduleName !== "STOP MODULE" && moduleName !== "Stop Module") {
+                activeModules.add(moduleName);
+                localStorage.setItem("activeModules", JSON.stringify([...activeModules]));
+            }
             if (!downloadedModules.has(moduleName)) {
                 showDownloadModal(moduleName, moduleUrl);
+            } else {
+                try {
+                    let runCommand = `sh ${modulePath}`;
+                    if (selectedGames.size > 0 && moduleName !== "STOP MODULE" && moduleName !== "Stop Module") {
+                        for (const game of allGames) {
+                            if (selectedGames.has(game.game)) {
+                                const packageName = game.command.match(/\+([a-zA-Z0-9.]+)/)?.[1] || '';
+                                if (packageName) {
+                                    runCommand += ` ${packageName}`;
+                                }
+                            }
+                        }
+                    }
+                    await window.Android.executeCommand(runCommand, moduleName, logId);
+                } catch (e) {
+                    console.error("Error executing module:", e);
+                    showNotification("Failed to run module. Ensure Shizuku is running and permissions are granted.");
+                    if (moduleName !== "STOP MODULE" && moduleName !== "Stop Module") {
+                        activeModules.delete(moduleName);
+                        localStorage.setItem("activeModules", JSON.stringify([...activeModules]));
+                    }
+                    window.runComplete(moduleName, false, logId);
+                    const switchElement = document.getElementById(`switch-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                    const fpsSwitchElement = document.getElementById(`fps-switch-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                    if (switchElement) switchElement.checked = false;
+                    if (fpsSwitchElement) fpsSwitchElement.checked = false;
+                }
+            }
+        }
+
+        async function handleFakeDeviceAction(deviceName, deviceUrl) {
+            if (activeFakeDevices.has(deviceName)) {
+                showNotification(`${deviceName} is already active.`);
+                const checkboxElement = document.getElementById(`fake-device-${deviceName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                if (checkboxElement) checkboxElement.checked = true;
+                return;
+            }
+            if (!window.Android) {
+                showNotification("This feature is only available in the Android application.");
+                const checkboxElement = document.getElementById(`fake-device-${deviceName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                if (checkboxElement) checkboxElement.checked = false;
+                return;
+            }
+            const fileName = deviceName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
+            const devicePath = `/storage/emulated/0/Download/com.fps.injector/${fileName}`;
+            const logId = generateRandomId();
+            window.currentLogId = logId;
+            window.currentOutput = "";
+            activeFakeDevices.add(deviceName);
+            localStorage.setItem("activeFakeDevices", JSON.stringify([...activeFakeDevices]));
+            if (!downloadedModules.has(deviceName)) {
+                showDownloadModal(deviceName, deviceUrl);
+            } else {
+                try {
+                    const runCommand = `sh ${devicePath}`;
+                    await window.Android.executeCommand(runCommand, deviceName, logId);
+                } catch (e) {
+                    console.error("Error executing fake device module:", e);
+                    showNotification("Failed to run fake device module. Ensure Shizuku is running and permissions are granted.");
+                    activeFakeDevices.delete(deviceName);
+                    localStorage.setItem("activeFakeDevices", JSON.stringify([...activeFakeDevices]));
+                    window.runComplete(deviceName, false, logId);
+                    const checkboxElement = document.getElementById(`fake-device-${deviceName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                    if (checkboxElement) checkboxElement.checked = false;
+                }
+            }
+        }
+
+        async function handleGameAction(gameName, gameCommand) {
+            if (!window.Android) {
+                showNotification("This feature is only available in the Android application.");
+                const checkboxElement = document.getElementById(`game-${gameName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                if (checkboxElement) checkboxElement.checked = false;
+                return;
+            }
+            const shizukuRunning = await checkShizukuStatus();
+            if (!shizukuRunning) {
+                showNotification("Shizuku is not running. Please start Shizuku and try again.");
+                const checkboxElement = document.getElementById(`game-${gameName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                if (checkboxElement) checkboxElement.checked = false;
+                return;
+            }
+            const logId = generateRandomId();
+            window.currentLogId = logId;
+            window.currentOutput = "";
+            try {
+                await window.Android.executeCommand(gameCommand, gameName, logId);
+            } catch (e) {
+                console.error("Error executing game command:", e);
+                showNotification(`Failed to optimize ${gameName}. Ensure Shizuku is running and permissions are granted.`);
+                selectedGames.delete(gameName);
+                localStorage.setItem("selectedGames", JSON.stringify([...selectedGames]));
+                window.runComplete(gameName, false, logId);
+                const checkboxElement = document.getElementById(`game-${gameName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                if (checkboxElement) checkboxElement.checked = false;
+            }
+        }
+
+        async function handleRestoreDevice() {
+            if (!window.Android) {
+                showNotification("This feature is only available in the Android application.");
+                return;
+            }
+            const shizukuRunning = await checkShizukuStatus();
+            if (!shizukuRunning) {
+                showNotification("Shizuku is not running. Please start Shizuku and try again.");
+                return;
+            }
+            const moduleName = "Restore Device";
+            const fileName = "restoredevice.sh";
+            const modulePath = `/storage/emulated/0/Download/com.fps.injector/${fileName}`;
+            const logId = generateRandomId();
+            window.currentLogId = logId;
+            window.currentOutput = "";
+            if (!downloadedModules.has(moduleName)) {
+                showDownloadModal(moduleName, RESTORE_DEVICE_URL);
             } else {
                 try {
                     const runCommand = `sh ${modulePath}`;
                     await window.Android.executeCommand(runCommand, moduleName, logId);
                 } catch (e) {
-                    console.error("Error executing module:", e);
-                    showNotification("Failed to run module. Ensure Shizuku is running and permissions are granted.");
+                    console.error("Error executing restore device module:", e);
+                    showNotification("Failed to run restore device module. Ensure Shizuku is running and permissions are granted.");
                     window.runComplete(moduleName, false, logId);
-                    const switchElement = document.getElementById(`switch-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
-                    if (switchElement) switchElement.checked = false;
                 }
             }
         }
@@ -535,17 +1038,9 @@
                 button.className = "px-4 py-2 bg-teal-500 text-gray-900 rounded-lg font-semibold hover:bg-teal-400";
                 return;
             }
-            if (activeModules.size > 0) {
-                showNotification("Only one module can be active at a time. Please disable the active module first.");
-                fileInput.value = '';
-                button.textContent = "Select";
-                button.className = "px-4 py-2 bg-teal-500 text-gray-900 rounded-lg font-semibold hover:bg-teal-400";
-                return;
-            }
             const logId = generateRandomId();
             window.currentLogId = logId;
             window.currentOutput = "";
-            document.getElementById("cmd-output").innerHTML = "";
             activeModules.add(moduleName);
             localStorage.setItem("activeModules", JSON.stringify([...activeModules]));
             try {
@@ -556,12 +1051,24 @@
                     const filePath = `/storage/emulated/0/Download/com.fps.injector/${fileName}`;
                     if (window.Android?.saveCustomModule) {
                         await window.Android.saveCustomModule(fileContent, filePath);
-                        const runCommand = `sh ${filePath}`;
+                        let runCommand = `sh ${filePath}`;
+                        if (selectedGames.size > 0) {
+                            for (const game of allGames) {
+                                if (selectedGames.has(game.game)) {
+                                    const packageName = game.command.match(/\+([a-zA-Z0-9.]+)/)?.[1] || '';
+                                    if (packageName) {
+                                        runCommand += ` ${packageName}`;
+                                    }
+                                }
+                            }
+                        }
                         try {
                             await window.Android.executeCommand(runCommand, moduleName, logId);
                         } catch (e) {
                             console.error("Error executing custom module:", e);
                             showNotification("Failed to run custom module. Ensure Shizuku is running and permissions are granted.");
+                            activeModules.delete(moduleName);
+                            localStorage.setItem("activeModules", JSON.stringify([...activeModules]));
                             window.runComplete(moduleName, false, logId);
                             fileInput.value = '';
                             button.textContent = "Select";
@@ -569,6 +1076,8 @@
                         }
                     } else {
                         showNotification("Android file save functionality not available.");
+                        activeModules.delete(moduleName);
+                        localStorage.setItem("activeModules", JSON.stringify([...activeModules]));
                         window.runComplete(moduleName, false, logId);
                         fileInput.value = '';
                         button.textContent = "Select";
@@ -579,6 +1088,8 @@
             } catch (e) {
                 console.error("Error processing custom module:", e);
                 showNotification("Failed to process custom module.");
+                activeModules.delete(moduleName);
+                localStorage.setItem("activeModules", JSON.stringify([...activeModules]));
                 window.runComplete(moduleName, false, logId);
                 fileInput.value = '';
                 button.textContent = "Select";
@@ -611,7 +1122,11 @@
                     clearInterval(window.downloadingModuleInterval);
                     window.runComplete(moduleName, false, window.currentLogId);
                     const switchElement = document.getElementById(`switch-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                    const fpsSwitchElement = document.getElementById(`fps-switch-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                    const checkboxElement = document.getElementById(`fake-device-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
                     if (switchElement) switchElement.checked = false;
+                    if (fpsSwitchElement) fpsSwitchElement.checked = false;
+                    if (checkboxElement) checkboxElement.checked = false;
                 }
             } catch (e) {
                 console.error("Error initiating download:", e);
@@ -620,15 +1135,21 @@
                 clearInterval(window.downloadingModuleInterval);
                 window.runComplete(moduleName, false, window.currentLogId);
                 const switchElement = document.getElementById(`switch-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                const fpsSwitchElement = document.getElementById(`fps-switch-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                const checkboxElement = document.getElementById(`fake-device-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
                 if (switchElement) switchElement.checked = false;
+                if (fpsSwitchElement) fpsSwitchElement.checked = false;
+                if (checkboxElement) checkboxElement.checked = false;
             }
         }
 
         window.onShellOutput = function(moduleName, output, logId) {
+            const cmdOutputModal = document.getElementById("cmd-output-modal");
             const cmdOutput = document.getElementById("cmd-output");
             window.currentOutput = (window.currentOutput || "") + output + "\n";
             cmdOutput.innerHTML = parseAnsiColors(window.currentOutput);
             cmdOutput.scrollTop = cmdOutput.scrollHeight;
+            cmdOutputModal.style.display = "flex";
             if (window.Android?.saveLog) {
                 window.Android.saveLog(window.currentOutput, logId);
             }
@@ -647,34 +1168,64 @@
                 localStorage.setItem("downloadedModules", JSON.stringify([...downloadedModules]));
                 showNotification(`${moduleName} downloaded successfully!`);
                 const switchElement = document.getElementById(`switch-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
-                const isStopModule = moduleName === "Stop Module";
-                if ((switchElement && switchElement.checked) || isStopModule) {
-                    const fileName = moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
+                const fpsSwitchElement = document.getElementById(`fps-switch-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                const checkboxElement = document.getElementById(`fake-device-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                const isStopModule = moduleName === "STOP MODULE" || moduleName === "Stop Module";
+                if ((switchElement && switchElement.checked) || (fpsSwitchElement && fpsSwitchElement.checked) || (checkboxElement && checkboxElement.checked) || isStopModule) {
+                    const fileName = moduleName === "Restore Device" ? "restoredevice.sh" : moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
                     const modulePath = `/storage/emulated/0/Download/com.fps.injector/${fileName}`;
-                    const runCommand = `sh ${modulePath}`;
+                    let runCommand = `sh ${modulePath}`;
+                    if (selectedGames.size > 0 && !isStopModule && moduleName !== "Restore Device") {
+                        for (const game of allGames) {
+                            if (selectedGames.has(game.game)) {
+                                const packageName = game.command.match(/\+([a-zA-Z0-9.]+)/)?.[1] || '';
+                                if (packageName) {
+                                    runCommand += ` ${packageName}`;
+                                }
+                            }
+                        }
+                    }
                     const logId = window.currentLogId || generateRandomId();
                     try {
                         window.Android.executeCommand(runCommand, moduleName, logId);
                     } catch (e) {
                         console.error("Error executing module after download:", e);
                         showNotification("Failed to run module. Ensure Shizuku is running and permissions are granted.");
+                        activeModules.delete(moduleName);
+                        activeFakeDevices.delete(moduleName);
+                        localStorage.setItem("activeModules", JSON.stringify([...activeModules]));
+                        localStorage.setItem("activeFakeDevices", JSON.stringify([...activeFakeDevices]));
                         window.runComplete(moduleName, false, logId);
                         if (switchElement) switchElement.checked = false;
+                        if (fpsSwitchElement) fpsSwitchElement.checked = false;
+                        if (checkboxElement) checkboxElement.checked = false;
                     }
                 }
             } else {
                 showNotification(`Download failed for ${moduleName}. Check your internet connection.`);
+                activeModules.delete(moduleName);
+                activeFakeDevices.delete(moduleName);
+                localStorage.setItem("activeModules", JSON.stringify([...activeModules]));
+                localStorage.setItem("activeFakeDevices", JSON.stringify([...activeFakeDevices]));
                 window.runComplete(moduleName, false, window.currentLogId);
                 const switchElement = document.getElementById(`switch-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                const fpsSwitchElement = document.getElementById(`fps-switch-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                const checkboxElement = document.getElementById(`fake-device-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
                 if (switchElement) switchElement.checked = false;
+                if (fpsSwitchElement) fpsSwitchElement.checked = false;
+                if (checkboxElement) checkboxElement.checked = false;
             }
         };
 
         window.runComplete = function(moduleName, success, logId) {
             const finalLogId = logId || window.currentLogId;
             const timestamp = new Date().toLocaleString();
+            const fileName = moduleName === "Restore Device" ? "restoredevice.sh" : moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
+            const command = selectedGames.size > 0 && !moduleName.includes("STOP MODULE") && !moduleName.includes("Stop Module") && moduleName !== "Restore Device"
+                ? `sh /storage/emulated/0/Download/com.fps.injector/${fileName} ${[...selectedGames].map(game => allGames.find(g => g.game === game)?.command.match(/\+([a-zA-Z0-9.]+)/)?.[1] || '').join(' ')}`
+                : `sh /storage/emulated/0/Download/com.fps.injector/${fileName}`;
             commandLogs.push({
-                command: `sh /storage/emulated/0/Download/com.fps.injector/${moduleName.replace(/[^a-zA-Z0-9]/g, '')}.sh`,
+                command: command.trim(),
                 output: window.currentOutput,
                 timestamp,
                 logId: finalLogId
@@ -683,19 +1234,38 @@
             renderLogs();
             if (success) {
                 showNotification(`${moduleName} executed successfully!`);
-                if (window.Android?.deleteModuleFile && moduleName !== "Stop Module") {
-                    const fileName = moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
+                // Check if URL can be opened
+                const lastOpened = sessionStorage.getItem('lastUrlOpenTime');
+                const currentTime = Date.now();
+                const oneMinute = 60 * 1000; // 1 minute in milliseconds
+                if (!lastOpened || (currentTime - parseInt(lastOpened)) > oneMinute) {
+                    window.open('https://obqj2.com/4/9587058', '_blank');
+                    sessionStorage.setItem('lastUrlOpenTime', currentTime.toString());
+                }
+                if (window.Android?.deleteModuleFile && moduleName !== "STOP MODULE" && moduleName !== "Stop Module" && moduleName !== "Restore Device") {
                     window.Android.deleteModuleFile(fileName);
                     downloadedModules.delete(moduleName);
                     localStorage.setItem("downloadedModules", JSON.stringify([...downloadedModules]));
                 }
+                if (allFakeDevices.some(device => device.name === moduleName) || moduleName === "Restore Device") {
+                    loadDeviceInfo();
+                }
             } else {
                 showNotification(`Failed to run module ${moduleName}. Check the logs for details.`);
+                activeModules.delete(moduleName);
+                activeFakeDevices.delete(moduleName);
+                localStorage.setItem("activeModules", JSON.stringify([...activeModules]));
+                localStorage.setItem("activeFakeDevices", JSON.stringify([...activeFakeDevices]));
+                const switchElement = document.getElementById(`switch-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                const fpsSwitchElement = document.getElementById(`fps-switch-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                const checkboxElement = document.getElementById(`fake-device-${moduleName.replace(/[^a-zA-Z0-9]/g, '')}`);
+                if (switchElement) switchElement.checked = false;
+                if (fpsSwitchElement) fpsSwitchElement.checked = false;
+                if (checkboxElement) checkboxElement.checked = false;
             }
-            document.getElementById("cmd-output").scrollIntoView({ behavior: 'smooth', block: 'end' });
-            activeModules.delete(moduleName);
-            localStorage.setItem("activeModules", JSON.stringify([...activeModules]));
             loadModules();
+            loadFpsModules();
+            loadFakeDevices();
             window.currentOutput = "";
             window.currentLogId = null;
             if (moduleName.includes("Custom Module")) {
@@ -706,31 +1276,47 @@
         };
 
         function renderLogs() {
-            const logPanel = document.getElementById("log-list");
-            logPanel.innerHTML = commandLogs.length === 0 ? `<p class="text-gray-300 text-sm"><i class="fas fa-info-circle mr-2"></i>No logs yet.</p>` : "";
-            [...commandLogs].reverse().forEach((log, index) => {
-                const originalIndex = commandLogs.length - 1 - index;
-                const logItem = document.createElement("div");
-                logItem.className = "flex justify-between items-center bg-gray-800/50 border-l-4 border-purple-600 p-3 rounded-lg mb-2";
-                logItem.innerHTML = `
-                    <div class="flex flex-col">
-                        <span class="text-teal-400 text-sm"><i class="fas fa-clock mr-2"></i>${log.timestamp}</span>
-                        <p class="text-sm"><i class="fas fa-terminal mr-2"></i><strong>Command:</strong> ${log.command.length > 30 ? log.command.substring(0, 27) + '...' : log.command}</p>
-                        <p class="text-sm"><i class="fas fa-id-badge mr-2"></i><strong>Log ID:</strong> ${log.logId || 'N/A'}</p>
-                    </div>
-                    <div class="flex gap-2">
-                        <button class="text-teal-400 hover:text-teal-300" onclick="viewLog(${originalIndex})"><i class="fas fa-eye"></i></button>
-                        <button class="text-red-400 hover:text-red-300" onclick="deleteLog(${originalIndex})"><i class="fas fa-trash"></i></button>
-                    </div>
-                `;
-                logPanel.appendChild(logItem);
+            const logPanels = document.querySelectorAll("#log-list");
+            logPanels.forEach(logPanel => {
+                logPanel.innerHTML = commandLogs.length === 0 ? `<p class="text-gray-300 text-sm"><i class="fas fa-info-circle mr-2"></i>No logs yet.</p>` : "";
+                [...commandLogs].reverse().forEach((log, index) => {
+                    const originalIndex = commandLogs.length - 1 - index;
+                    const logItem = document.createElement("div");
+                    logItem.className = "flex justify-between items-center bg-gray-800/50 border-l-4 border-purple-600 p-2 rounded-lg mb-1";
+                    logItem.innerHTML = `
+                        <div class="flex flex-col">
+                            <span class="text-teal-400 text-sm"><i class="fas fa-clock mr-2"></i>${log.timestamp}</span>
+                            <p class="text-sm"><i class="fas fa-terminal mr-2"></i><strong>Command:</strong> ${log.command.length > 30 ? log.command.substring(0, 27) + '...' : log.command}</p>
+                            <p class="text-sm"><i class="fas fa-id-badge mr-2"></i><strong>Log ID:</strong> ${log.logId || 'N/A'}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="text-teal-400 hover:text-teal-300" onclick="viewLog(${originalIndex})"><i class="fas fa-eye"></i></button>
+                            <button class="text-red-400 hover:text-red-300" onclick="deleteLog(${originalIndex})"><i class="fas fa-trash"></i></button>
+                        </div>
+                    `;
+                    logPanel.appendChild(logItem);
+                });
             });
+        }
+
+        async function clearAllLogs() {
+            if (await showConfirmation("Are you sure you want to clear all logs?")) {
+                if (window.Android?.deleteLog) {
+                    for (const log of commandLogs) {
+                        window.Android.deleteLog(log.logId);
+                    }
+                }
+                commandLogs = [];
+                localStorage.setItem("commandLogs", JSON.stringify(commandLogs));
+                renderLogs();
+                showNotification("All logs cleared successfully!");
+            }
         }
 
         function viewLog(index) {
             const log = commandLogs[index];
             const modal = document.getElementById("download-modal");
-            const modalContent = document.getElementById("modal-content");
+            const modalContent = document.querySelector("#download-modal .modal-content");
             modalContent.innerHTML = `
                 <h2 class="text-base font-bold text-teal-300 mb-2"><i class="fas fa-file-alt mr-2"></i>Log Details</h2>
                 <p class="text-xs"><i class="fas fa-clock mr-2"></i><strong>Timestamp:</strong> ${log.timestamp}</p>
@@ -753,12 +1339,61 @@
             }
         }
 
+        function showTab(tabId) {
+            const allContents = document.querySelectorAll('.tab-content');
+            const allNavItems = document.querySelectorAll('.nav-item');
+            
+            // Set all tabs to fade out
+            allContents.forEach(content => {
+                content.style.opacity = '0';
+            });
+
+            // Update active nav item
+            allNavItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`.nav-item[data-tab="${tabId}"]`).classList.add('active');
+
+            // Show the selected tab with fade-in
+            const targetContent = document.getElementById(tabId);
+            targetContent.style.display = 'block';
+            setTimeout(() => {
+                targetContent.classList.add('active');
+                targetContent.style.opacity = '1';
+            }, 10); // Small delay to ensure display: block is applied before opacity transition
+
+            // Hide other tabs after transition
+            setTimeout(() => {
+                allContents.forEach(content => {
+                    if (content.id !== tabId) {
+                        content.style.display = 'none';
+                    }
+                });
+            }, 300); // Match duration-300
+        }
+
+        // Sidebar toggle functionality
+        document.getElementById("sidebar-toggle").addEventListener("click", () => {
+            const sidebar = document.getElementById("sidebar");
+            sidebar.classList.toggle("open");
+        });
+
+        document.getElementById("sidebar-close").addEventListener("click", () => {
+            const sidebar = document.getElementById("sidebar");
+            sidebar.classList.remove("open");
+        });
+
         document.getElementById("device-info-toggle").addEventListener("click", () => {
             const content = document.getElementById("device-info");
             content.classList.toggle("show");
-            const icon = document.getElementById("device-info-toggle").querySelector("i");
+            const icon = document.getElementById("device-info-toggle").querySelector(".fa-chevron-down, .fa-chevron-up");
             icon.classList.toggle("fa-chevron-down");
             icon.classList.toggle("fa-chevron-up");
+        });
+
+        document.getElementById("refresh-device-info").addEventListener("click", () => {
+            loadDeviceInfo();
+            showNotification("Device info refreshed!");
         });
 
         const customModuleInput = document.getElementById("custom-module-input");
@@ -796,18 +1431,31 @@
             }
         });
 
-        document.getElementById("sidebar-toggle").addEventListener("click", () => {
-            const sidebar = document.getElementById("sidebar");
-            sidebar.classList.toggle("open");
+        document.getElementById("restore-device-btn").addEventListener("click", async () => {
+            if (await showConfirmation("Are you sure you want to restore the device to its original settings?")) {
+                handleRestoreDevice();
+            }
         });
 
-        document.getElementById("sidebar-close").addEventListener("click", () => {
-            const sidebar = document.getElementById("sidebar");
-            sidebar.classList.remove("open");
+        document.querySelectorAll("#clear-logs-btn, #clear-logs-btn-performance, #clear-logs-btn-game").forEach(btn => {
+            btn.addEventListener("click", clearAllLogs);
+        });
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const tabId = item.getAttribute('data-tab');
+                showTab(tabId);
+                // Close sidebar when a tab is selected
+                const sidebar = document.getElementById("sidebar");
+                sidebar.classList.remove("open");
+            });
         });
 
         checkShizukuStatus();
         loadModules();
+        loadFpsModules();
+        loadFakeDevices();
+        loadGames();
         loadDeviceInfo();
         loadAppVersion();
         renderLogs();
