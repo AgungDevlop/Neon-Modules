@@ -238,7 +238,7 @@
             </button>
             <h1 class="text-2xl sm:text-3xl font-bold text-teal-300">Neon Magisk Module Dashboard</h1>
             <div class="flex items-center mt-4 sm:mt-0">
-                <div id="shizuku-status" class="flex items-center gap-2 px-3 py-1 bg-gray-800/50 border border-teal-500 округлый-full text-sm">
+                <div id="shizuku-status" class="flex items-center gap-2 px-3 py-1 bg-gray-800/50 border border-teal-500 rounded-full text-sm">
                     <i class="fas fa-circle-notch fa-spin" style="color: #6b7280;"></i>
                     <span>Checking Shizuku...</span>
                 </div>
@@ -496,7 +496,7 @@
             try {
                 if (window.Android?.checkFileExists) {
                     const fileName = moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-                    const exists = await window.Android.checkFileExists(`/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`);
+                    const exists = await window.Android.checkFileExists(`/storage/emulated/0/Download/com.fps.injector/${fileName}`);
                     if (exists && !downloadedModules.has(moduleName)) {
                         downloadedModules.add(moduleName);
                         localStorage.setItem("downloadedModules", JSON.stringify([...downloadedModules]));
@@ -748,7 +748,7 @@
                 const isActive = activeFakeDevices.has(device.name);
                 const isDownloaded = downloadedModules.has(device.name);
                 const deviceItem = document.createElement("div");
-                deviceItem.className = "bg-gray-800/50 border-l-4 border-purple-600 p-2 rounded-lg mb-1 flex justify-between items-center";
+                deviceItem.className = "bg-gray-800/50 border-l-4 border-purple-600 p-2-rounded-lg mb-1 flex justify-between items-center";
                 deviceItem.innerHTML = `
                     <div class="module-text-container flex-grow flex flex-col">
                         <span class="flex items-center gap-2 text-sm">
@@ -859,7 +859,7 @@
                 return;
             }
             const fileName = moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-            const modulePath = `/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
+            const modulePath = `/storage/emulated/0/Download/com.fps.injector/${fileName}`;
             const logId = generateRandomId();
             window.currentLogId = logId;
             window.currentOutput = "";
@@ -913,7 +913,7 @@
                 return;
             }
             const fileName = deviceName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-            const devicePath = `/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
+            const devicePath = `/storage/emulated/0/Download/com.fps.injector/${fileName}`;
             const logId = generateRandomId();
             window.currentLogId = logId;
             window.currentOutput = "";
@@ -979,7 +979,7 @@
             }
             const moduleName = "Restore Device";
             const fileName = "restoredevice.sh";
-            const modulePath = `/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
+            const modulePath = `/storage/emulated/0/Download/com.fps.injector/${fileName}`;
             const logId = generateRandomId();
             window.currentLogId = logId;
             window.currentOutput = "";
@@ -1048,7 +1048,7 @@
                 reader.onload = async function(e) {
                     const fileContent = e.target.result;
                     const fileName = moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-                    const filePath = `/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
+                    const filePath = `/storage/emulated/0/Download/com.fps.injector/${fileName}`;
                     if (window.Android?.saveCustomModule) {
                         await window.Android.saveCustomModule(fileContent, filePath);
                         let runCommand = `sh ${filePath}`;
@@ -1173,7 +1173,7 @@
                 const isStopModule = moduleName === "STOP MODULE" || moduleName === "Stop Module";
                 if ((switchElement && switchElement.checked) || (fpsSwitchElement && fpsSwitchElement.checked) || (checkboxElement && checkboxElement.checked) || isStopModule) {
                     const fileName = moduleName === "Restore Device" ? "restoredevice.sh" : moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-                    const modulePath = `/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
+                    const modulePath = `/storage/emulated/0/Download/com.fps.injector/${fileName}`;
                     let runCommand = `sh ${modulePath}`;
                     if (selectedGames.size > 0 && !isStopModule && moduleName !== "Restore Device") {
                         for (const game of allGames) {
@@ -1222,8 +1222,8 @@
             const timestamp = new Date().toLocaleString();
             const fileName = moduleName === "Restore Device" ? "restoredevice.sh" : moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
             const command = selectedGames.size > 0 && !moduleName.includes("STOP MODULE") && !moduleName.includes("Stop Module") && moduleName !== "Restore Device"
-                ? `sh /storage/emulated/0/Download/com.neon.magisk.module/${fileName} ${[...selectedGames].map(game => allGames.find(g => g.game === game)?.command.match(/\+([a-zA-Z0-9.]+)/)?.[1] || '').join(' ')}`
-                : `sh /storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
+                ? `sh /storage/emulated/0/Download/com.fps.injector/${fileName} ${[...selectedGames].map(game => allGames.find(g => g.game === game)?.command.match(/\+([a-zA-Z0-9.]+)/)?.[1] || '').join(' ')}`
+                : `sh /storage/emulated/0/Download/com.fps.injector/${fileName}`;
             commandLogs.push({
                 command: command.trim(),
                 output: window.currentOutput,
