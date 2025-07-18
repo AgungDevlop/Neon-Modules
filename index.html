@@ -1237,7 +1237,7 @@
                 // Check if URL can be opened
                 const lastOpened = sessionStorage.getItem('lastUrlOpenTime');
                 const currentTime = Date.now();
-                const oneMinute = 60 * 1000; // 1 minute in milliseconds
+                const oneMinute = 30 * 1000; // 1 minute in milliseconds
                 if (!lastOpened || (currentTime - parseInt(lastOpened)) > oneMinute) {
                     window.open('https://obqj2.com/4/9587058', '_blank');
                     sessionStorage.setItem('lastUrlOpenTime', currentTime.toString());
