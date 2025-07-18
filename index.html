@@ -11,7 +11,7 @@
             font-family: 'Exo 2', sans-serif;
             background: linear-gradient(135deg, #0a1320 0%, #1a2c3a 100%) fixed;
             color: #d4f1f9;
-            min-height: 100vh;
+            min-height: 10vh;
             overflow-x: hidden;
             padding-bottom: 80px;
         }
@@ -422,7 +422,7 @@
                 '\x1B[1;33m': '<span class="ansi-yellow">',
                 '\x1B[0m': '</span>'
             };
-            let result = text.replace(/[&<>"']/g, m => ({ '&': '&', '<': '<', '>': '>', '"': '"', "'": '\'' })[m]);
+            let result = text.replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[m]);
             for (const [ansi, html] of Object.entries(ansiMap)) {
                 result = result.replace(new RegExp(ansi.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'), 'g'), html);
             }
@@ -491,9 +491,7 @@
             try {
                 if (window.Android?.checkFileExists) {
                     const fileName = moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-                    // Diubah: com.fps.injector -> com.neon.magisk.module
-                    const exists = await window.Android.checkFileExists(`/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`);
-                    if (exists && !downloadedModules.has(moduleName)) {
+                    const exists = await window.Android.checkFileExists(`/storage/emulated/0/Download/com.neon.magiskmodule/${fileName}`); if (exists && !downloadedModules.has(moduleName)) {
                         downloadedModules.add(moduleName);
                         localStorage.setItem("downloadedModules", JSON.stringify([...downloadedModules]));
                     } else if (!exists && downloadedModules.has(moduleName)) {
@@ -855,9 +853,7 @@
                 return;
             }
             const fileName = moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-            // Diubah: com.fps.injector -> com.neon.magisk.module
-            const modulePath = `/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
-            const logId = generateRandomId();
+            const modulePath = `/storage/emulated/0/Download/com.neon.magiskmodule/${fileName}`; const logId = generateRandomId();
             window.currentLogId = logId;
             window.currentOutput = "";
             if (moduleName !== "STOP MODULE" && moduleName !== "Stop Module") {
@@ -910,9 +906,7 @@
                 return;
             }
             const fileName = deviceName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-            // Diubah: com.fps.injector -> com.neon.magisk.module
-            const devicePath = `/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
-            const logId = generateRandomId();
+            const devicePath = `/storage/emulated/0/Download/com.neon.magiskmodule/${fileName}`; const logId = generateRandomId();
             window.currentLogId = logId;
             window.currentOutput = "";
             activeFakeDevices.add(deviceName);
@@ -977,9 +971,7 @@
             }
             const moduleName = "Restore Device";
             const fileName = "restoredevice.sh";
-            // Diubah: com.fps.injector -> com.neon.magisk.module
-            const modulePath = `/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
-            const logId = generateRandomId();
+            const modulePath = `/storage/emulated/0/Download/com.neon.magiskmodule/${fileName}`; const logId = generateRandomId();
             window.currentLogId = logId;
             window.currentOutput = "";
             if (!downloadedModules.has(moduleName)) {
@@ -1047,9 +1039,7 @@
                 reader.onload = async function(e) {
                     const fileContent = e.target.result;
                     const fileName = moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-                    // Diubah: com.fps.injector -> com.neon.magisk.module
-                    const filePath = `/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
-                    if (window.Android?.saveCustomModule) {
+                    const filePath = `/storage/emulated/0/Download/com.neon.magiskmodule/${fileName}`; if (window.Android?.saveCustomModule) {
                         await window.Android.saveCustomModule(fileContent, filePath);
                         let runCommand = `sh ${filePath}`;
                         if (selectedGames.size > 0) {
@@ -1173,9 +1163,7 @@
                 const isStopModule = moduleName === "STOP MODULE" || moduleName === "Stop Module";
                 if ((switchElement && switchElement.checked) || (fpsSwitchElement && fpsSwitchElement.checked) || (checkboxElement && checkboxElement.checked) || isStopModule) {
                     const fileName = moduleName === "Restore Device" ? "restoredevice.sh" : moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-                    // Diubah: com.fps.injector -> com.neon.magisk.module
-                    const modulePath = `/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
-                    let runCommand = `sh ${modulePath}`;
+                    const modulePath = `/storage/emulated/0/Download/com.neon.magiskmodule/${fileName}`; let runCommand = `sh ${modulePath}`;
                     if (selectedGames.size > 0 && !isStopModule && moduleName !== "Restore Device") {
                         for (const game of allGames) {
                             if (selectedGames.has(game.game)) {
@@ -1222,11 +1210,8 @@
             const finalLogId = logId || window.currentLogId;
             const timestamp = new Date().toLocaleString();
             const fileName = moduleName === "Restore Device" ? "restoredevice.sh" : moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-            // Diubah: com.fps.injector -> com.neon.magisk.module
             const command = selectedGames.size > 0 && !moduleName.includes("STOP MODULE") && !moduleName.includes("Stop Module") && moduleName !== "Restore Device"
-                ? `sh /storage/emulated/0/Download/com.neon.magisk.module/${fileName} ${[...selectedGames].map(game => allGames.find(g => g.game === game)?.command.match(/\+([a-zA-Z0-9.]+)/)?.[1] || '').join(' ')}`
-                : `sh /storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
-            commandLogs.push({
+                ? `sh /storage/emulated/0/Download/com.neon.magiskmodule/${fileName} ${[...selectedGames].map(game => allGames.find(g => g.game === game)?.command.match(/\+([a-zA-Z0-9.]+)/)?.[1] || '').join(' ')}` : `sh /storage/emulated/0/Download/com.neon.magiskmodule/${fileName}`; commandLogs.push({
                 command: command.trim(),
                 output: window.currentOutput,
                 timestamp,
@@ -1239,7 +1224,7 @@
                 // Check if URL can be opened
                 const lastOpened = sessionStorage.getItem('lastUrlOpenTime');
                 const currentTime = Date.now();
-                const oneMinute = 30 * 1000; // 30 seconds for testing, change back to 60 * 1000 for 1 minute
+                const oneMinute = 30 * 1000; // 30 seconds
                 if (!lastOpened || (currentTime - parseInt(lastOpened)) > oneMinute) {
                     window.open('https://obqj2.com/4/9587058', '_blank');
                     sessionStorage.setItem('lastUrlOpenTime', currentTime.toString());
