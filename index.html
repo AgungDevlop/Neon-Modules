@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FPS Injector</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Neon Magisk Module</title> <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&family=JetBrains+Mono:wght@400;700&display=stylesheet">
     <style>
@@ -236,8 +235,7 @@
             <button id="sidebar-toggle" class="text-teal-400 hover:text-teal-300 sm:mr-4">
                 <i class="fas fa-bars text-lg"></i>
             </button>
-            <h1 class="text-2xl sm:text-3xl font-bold text-teal-300">FPS Injector Dashboard</h1>
-            <div class="flex items-center mt-4 sm:mt-0">
+            <h1 class="text-2xl sm:text-3xl font-bold text-teal-300">Neon Magisk Module Dashboard</h1> <div class="flex items-center mt-4 sm:mt-0">
                 <div id="shizuku-status" class="flex items-center gap-2 px-3 py-1 bg-gray-800/50 border border-teal-500 rounded-full text-sm">
                     <i class="fas fa-circle-notch fa-spin" style="color: #6b7280;"></i>
                     <span>Checking Shizuku...</span>
@@ -245,7 +243,6 @@
             </div>
         </div>
 
-        <!-- Home Tab Content -->
         <div id="home-content" class="tab-content active">
             <div class="bg-gray-900/80 border border-teal-500 rounded-lg p-4 mb-4">
                 <div class="flex justify-between items-center cursor-pointer" id="device-info-toggle">
@@ -292,7 +289,6 @@
             </div>
         </div>
 
-        <!-- Performance Tab Content -->
         <div id="performance-content" class="tab-content">
             <div class="bg-gray-900/80 border border-teal-500 rounded-lg p-4 mb-4">
                 <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-bolt mr-2"></i>Performance Modules</h2>
@@ -307,7 +303,6 @@
             </div>
         </div>
 
-        <!-- Game Tab Content -->
         <div id="game-content" class="tab-content">
             <div class="bg-gray-900/80 border border-teal-500 rounded-lg p-4 mb-4">
                 <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-gamepad mr-2"></i>Game Optimization</h2>
@@ -496,7 +491,8 @@
             try {
                 if (window.Android?.checkFileExists) {
                     const fileName = moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-                    const exists = await window.Android.checkFileExists(`/storage/emulated/0/Download/com.fps.injector/${fileName}`);
+                    // Diubah: com.fps.injector -> com.neon.magisk.module
+                    const exists = await window.Android.checkFileExists(`/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`);
                     if (exists && !downloadedModules.has(moduleName)) {
                         downloadedModules.add(moduleName);
                         localStorage.setItem("downloadedModules", JSON.stringify([...downloadedModules]));
@@ -859,7 +855,8 @@
                 return;
             }
             const fileName = moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-            const modulePath = `/storage/emulated/0/Download/com.fps.injector/${fileName}`;
+            // Diubah: com.fps.injector -> com.neon.magisk.module
+            const modulePath = `/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
             const logId = generateRandomId();
             window.currentLogId = logId;
             window.currentOutput = "";
@@ -913,7 +910,8 @@
                 return;
             }
             const fileName = deviceName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-            const devicePath = `/storage/emulated/0/Download/com.fps.injector/${fileName}`;
+            // Diubah: com.fps.injector -> com.neon.magisk.module
+            const devicePath = `/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
             const logId = generateRandomId();
             window.currentLogId = logId;
             window.currentOutput = "";
@@ -979,7 +977,8 @@
             }
             const moduleName = "Restore Device";
             const fileName = "restoredevice.sh";
-            const modulePath = `/storage/emulated/0/Download/com.fps.injector/${fileName}`;
+            // Diubah: com.fps.injector -> com.neon.magisk.module
+            const modulePath = `/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
             const logId = generateRandomId();
             window.currentLogId = logId;
             window.currentOutput = "";
@@ -1048,7 +1047,8 @@
                 reader.onload = async function(e) {
                     const fileContent = e.target.result;
                     const fileName = moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-                    const filePath = `/storage/emulated/0/Download/com.fps.injector/${fileName}`;
+                    // Diubah: com.fps.injector -> com.neon.magisk.module
+                    const filePath = `/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
                     if (window.Android?.saveCustomModule) {
                         await window.Android.saveCustomModule(fileContent, filePath);
                         let runCommand = `sh ${filePath}`;
@@ -1173,7 +1173,8 @@
                 const isStopModule = moduleName === "STOP MODULE" || moduleName === "Stop Module";
                 if ((switchElement && switchElement.checked) || (fpsSwitchElement && fpsSwitchElement.checked) || (checkboxElement && checkboxElement.checked) || isStopModule) {
                     const fileName = moduleName === "Restore Device" ? "restoredevice.sh" : moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-                    const modulePath = `/storage/emulated/0/Download/com.fps.injector/${fileName}`;
+                    // Diubah: com.fps.injector -> com.neon.magisk.module
+                    const modulePath = `/storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
                     let runCommand = `sh ${modulePath}`;
                     if (selectedGames.size > 0 && !isStopModule && moduleName !== "Restore Device") {
                         for (const game of allGames) {
@@ -1221,9 +1222,10 @@
             const finalLogId = logId || window.currentLogId;
             const timestamp = new Date().toLocaleString();
             const fileName = moduleName === "Restore Device" ? "restoredevice.sh" : moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
+            // Diubah: com.fps.injector -> com.neon.magisk.module
             const command = selectedGames.size > 0 && !moduleName.includes("STOP MODULE") && !moduleName.includes("Stop Module") && moduleName !== "Restore Device"
-                ? `sh /storage/emulated/0/Download/com.fps.injector/${fileName} ${[...selectedGames].map(game => allGames.find(g => g.game === game)?.command.match(/\+([a-zA-Z0-9.]+)/)?.[1] || '').join(' ')}`
-                : `sh /storage/emulated/0/Download/com.fps.injector/${fileName}`;
+                ? `sh /storage/emulated/0/Download/com.neon.magisk.module/${fileName} ${[...selectedGames].map(game => allGames.find(g => g.game === game)?.command.match(/\+([a-zA-Z0-9.]+)/)?.[1] || '').join(' ')}`
+                : `sh /storage/emulated/0/Download/com.neon.magisk.module/${fileName}`;
             commandLogs.push({
                 command: command.trim(),
                 output: window.currentOutput,
@@ -1237,7 +1239,7 @@
                 // Check if URL can be opened
                 const lastOpened = sessionStorage.getItem('lastUrlOpenTime');
                 const currentTime = Date.now();
-                const oneMinute = 30 * 1000; // 1 minute in milliseconds
+                const oneMinute = 30 * 1000; // 30 seconds for testing, change back to 60 * 1000 for 1 minute
                 if (!lastOpened || (currentTime - parseInt(lastOpened)) > oneMinute) {
                     window.open('https://obqj2.com/4/9587058', '_blank');
                     sessionStorage.setItem('lastUrlOpenTime', currentTime.toString());
