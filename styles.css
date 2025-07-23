@@ -1,0 +1,219 @@
+body {
+    font-family: 'Exo 2', sans-serif;
+    background: linear-gradient(135deg, #0a1320 0%, #1a2c3a 100%) fixed;
+    color: #d4f1f9;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding-bottom: 80px;
+}
+
+.bg-particles {
+    position: absolute;
+    inset: 0;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><circle cx="50" cy="50" r="2" fill="#26a69a"/><circle cx="750" cy="750" r="3" fill="#5e35b1"/></svg>') repeat;
+    opacity: 0.15;
+    z-index: 0;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 18px;
+    flex-shrink: 0;
+}
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #374151;
+    transition: background-color 0.3s;
+    border-radius: 18px;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 2px;
+    bottom: 2px;
+    background-color: #d4f1f9;
+    transition: transform 0.3s;
+    border-radius: 50%;
+}
+input:checked + .slider {
+    background-color: #26a69a;
+}
+input:checked + .slider:before {
+    transform: translateX(18px);
+}
+input:disabled + .slider {
+    background-color: #4b5563;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.modal, .confirmation-modal, .cmd-output-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    overflow: auto;
+}
+.modal-content, .confirmation-content, .cmd-output-content {
+    background: #0a1320;
+    border: 1px solid #5e35b1;
+    border-radius: 8px;
+    padding: 16px;
+    width: 90%;
+    max-width: 400px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+    position: relative;
+}
+.confirmation-content {
+    max-width: 300px;
+    text-align: center;
+}
+
+.notification {
+    display: none;
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #26a69a;
+    color: #0a1320;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    z-index: 1001;
+    max-width: 90%;
+    word-wrap: break-word;
+}
+
+.progress-bar {
+    height: 8px;
+    background: linear-gradient(to right, #26a69a, #5e35b1);
+    border-radius: 4px;
+    transition: width 0.3s ease-in-out;
+    width: 100%;
+}
+
+.cmd-output {
+    background: #0a1320;
+    padding: 12px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-y: auto;
+    border: 1px solid #26a69a;
+    box-sizing: border-box;
+    color: #d4f1f9;
+    line-height: 1.5;
+    max-height: 50vh;
+}
+
+.ansi-green { color: #26a69a; }
+.ansi-red { color: #ef5350; }
+.ansi-cyan { color: #00acc1; }
+.ansi-yellow { color: #ffca28; }
+
+.dropdown-content {
+    display: none;
+    margin-top: 8px;
+}
+.dropdown-content.show {
+    display: block;
+}
+
+#sidebar {
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(-100%);
+}
+#sidebar.open {
+    transform: translateX(0);
+}
+
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #0a1320;
+    border-top: 1px solid #5e35b1;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 60px;
+    z-index: 20;
+    margin-top: 20px;
+}
+.nav-item {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    color: #d4f1f9;
+    transition: background-color 0.3s;
+}
+.nav-item.active {
+    background: #26a69a;
+    color: #0a1320;
+}
+.nav-item:hover {
+    background: #374151;
+}
+
+.tab-content {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+.tab-content.active {
+    display: block;
+    opacity: 1;
+}
+
+.module-text-container {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+.module-text-container p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+    .modal-content, .confirmation-content, .cmd-output-content {
+        width: 95%;
+        max-width: 95%;
+        padding: 12px;
+    }
+    .cmd-output {
+        font-size: 11px;
+        max-height: 40vh;
+    }
+    .notification {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+    .bottom-nav {
+        height: 50px;
+    }
+    .nav-item {
+        padding: 8px;
+    }
+}
