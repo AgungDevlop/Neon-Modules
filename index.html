@@ -3,184 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Neon Magisk Module - Optimize your Android device with custom modules, FPS enhancements, and game optimizations.">
-    <meta name="keywords" content="Neon Magisk, Android optimization, custom modules, FPS boost, game optimization">
-    <meta name="author" content="Agung Developer">
-    <title>Neon Magisk Module - Android Optimization Tool</title>
-    <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" async>
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>Neon Magisk Module</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://agungdevlop.github.io/Neon-Modules/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gradient-to-br from-gray-950 to-gray-900 text-gray-200 font-exo min-h-screen flex flex-col">
-    <header class="container mx-auto max-w-4xl px-4 sm:px-6 py-6 z-10">
-        <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
-            <button id="sidebar-toggle" class="text-teal-400 hover:text-teal-300 transition-colors duration-200" aria-label="Toggle Sidebar">
+<body class="bg-gradient-to-br from-gray-900 to-gray-800 text-gray-200 font-exo min-h-screen flex flex-col">
+    <div class="container mx-auto max-w-4xl px-4 sm:px-6 py-6 flex-grow relative z-10">
+        <header class="flex flex-col sm:flex-row justify-between items-center mb-6">
+            <button id="sidebar-toggle" class="text-teal-400 hover:text-teal-300 sm:mr-4 transition-colors">
                 <i class="fas fa-bars text-lg"></i>
             </button>
             <h1 class="text-2xl sm:text-3xl font-bold text-teal-300 text-center">Neon Magisk Module</h1>
             <div class="flex items-center mt-4 sm:mt-0">
-                <div id="shizuku-status" class="flex items-center gap-2 px-3 py-1 bg-gray-800/80 border border-teal-600 rounded-full text-sm shadow-sm">
+                <div id="shizuku-status" class="flex items-center gap-2 px-3 py-1 bg-gray-800/70 border border-teal-500 rounded-full text-sm">
                     <i class="fas fa-circle-notch fa-spin text-gray-500"></i>
                     <span>Checking Shizuku...</span>
                 </div>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <main class="container mx-auto max-w-4xl px-4 sm:px-6 flex-grow z-10">
         <!-- Home Tab Content -->
-        <section id="home-content" class="tab-content active">
-            <div class="bg-gray-900/95 border border-teal-600 rounded-xl p-5 mb-5 shadow-xl hover:shadow-teal-500/20 transition-shadow duration-300">
+        <div id="home-content" class="tab-content active">
+            <div class="bg-gray-900/90 border border-teal-600 rounded-lg p-4 mb-4 shadow-lg">
                 <div class="flex justify-between items-center cursor-pointer" id="device-info-toggle">
-                    <h2 class="text-lg font-semibold text-teal-300">Device Info</h2>
-                    <div class="flex items-center gap-3">
-                        <button id="refresh-device-info" class="text-teal-400 hover:text-teal-300 transition-colors duration-200" aria-label="Refresh Device Info">
+                    <h2 class="text-lg font-bold text-teal-300">Device Info</h2>
+                    <div class="flex items-center gap-2">
+                        <button id="refresh-device-info" class="text-teal-400 hover:text-teal-300 transition-colors">
                             <i class="fas fa-sync-alt"></i>
                         </button>
-                        <i class="fas fa-chevron-down text-teal-400 transition-transform duration-200"></i>
+                        <i class="fas fa-chevron-down text-teal-400"></i>
                     </div>
                 </div>
-                <div id="device-info" class="dropdown-content text-gray-300 mt-3 text-sm"></div>
+                <div id="device-info" class="dropdown-content text-gray-300 mt-2"></div>
             </div>
-            <div class="bg-gray-900/95 border border-teal-600 rounded-xl p-5 mb-5 shadow-xl hover:shadow-teal-500/20 transition-shadow duration-300">
-                <h2 class="text-lg font-semibold text-teal-300 mb-3"><i class="fas fa-cog mr-2"></i>Custom Module</h2>
+            <div class="bg-gray-900/90 border border-teal-600 rounded-lg p-4 mb-4 shadow-lg">
+                <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-cog mr-2"></i>Custom Module</h2>
                 <div id="custom-module-list">
-                    <div class="flex justify-between items-center bg-gray-800/80 border-l-4 border-purple-600 p-4 rounded-lg">
-                        <span class="flex items-center gap-2 text-sm">
+                    <div class="flex justify-between items-center bg-gray-800/70 border-l-4 border-purple-600 p-3 rounded-lg">
+                        <span class="flex items-center gap-2">
                             <i class="fas fa-cog text-teal-400"></i>
                             <span>Using Custom Module</span>
                         </span>
                         <div>
                             <input type="file" id="custom-module-input" accept=".sh" class="hidden">
-                            <button id="custom-module-btn" class="px-4 py-2 bg-teal-500 text-gray-900 rounded-lg font-semibold hover:bg-teal-400 transition-colors duration-200 shadow-sm">Select</button>
+                            <button id="custom-module-btn" class="px-4 py-2 bg-teal-500 text-gray-900 rounded-lg font-semibold hover:bg-teal-400 transition-colors">Select</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="bg-gray-900/95 border border-teal-600 rounded-xl p-5 mb-5 shadow-xl hover:shadow-teal-500/20 transition-shadow duration-300">
-                <h2 class="text-lg font-semibold text-teal-300 mb-3"><i class="fas fa-terminal mr-2"></i>Custom Command</h2>
-                <div class="flex flex-col gap-3">
-                    <textarea id="custom-command-input" class="bg-gray-800/80 border border-purple-600 p-3 rounded-lg text-gray-300 font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-teal-500 transition-shadow duration-200" rows="4" placeholder="Enter your command here..." aria-label="Custom Command Input"></textarea>
-                    <button id="run-custom-command-btn" class="px-4 py-2 bg-teal-500 text-gray-900 rounded-lg font-semibold hover:bg-teal-400 transition-colors duration-200 shadow-sm">Run Command</button>
+            <div class="bg-gray-900/90 border border-teal-600 rounded-lg p-4 mb-4 shadow-lg">
+                <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-terminal mr-2"></i>Custom Command</h2>
+                <div class="flex flex-col gap-2">
+                    <textarea id="custom-command-input" class="bg-gray-800/70 border border-purple-600 p-2 rounded-lg text-gray-300 font-mono text-sm resize-none focus:outline-none focus:ring-2 focus:ring-teal-500" rows="4" placeholder="Enter your command here..."></textarea>
+                    <button id="run-custom-command-btn" class="px-4 py-2 bg-teal-500 text-gray-900 rounded-lg font-semibold hover:bg-teal-400 transition-colors">Run Command</button>
                 </div>
             </div>
-            <div class="bg-gray-900/95 border border-teal-600 rounded-xl p-5 mb-5 shadow-xl hover:shadow-teal-500/20 transition-shadow duration-300">
-                <h2 class="text-lg font-semibold text-teal-300 mb-3"><i class="fas fa-mobile-alt mr-2"></i>Fake Device Modules</h2>
+            <div class="bg-gray-900/90 border border-teal-600 rounded-lg p-4 mb-4 shadow-lg">
+                <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-mobile-alt mr-2"></i>Fake Device Modules</h2>
                 <div id="fake-device-items"></div>
-                <button id="restore-device-btn" class="w-full mt-3 px-4 py-2 bg-teal-500 text-gray-900 rounded-lg font-semibold hover:bg-teal-400 transition-colors duration-200 shadow-sm">Restore Device</button>
+                <button id="restore-device-btn" class="w-full mt-2 px-4 py-2 bg-teal-500 text-gray-900 rounded-lg font-semibold hover:bg-teal-400 transition-colors">Restore Device</button>
             </div>
-            <div class="bg-gray-900/95 border border-teal-600 rounded-xl p-5 mb-5 shadow-xl hover:shadow-teal-500/20 transition-shadow duration-300">
-                <h2 class="text-lg font-semibold text-teal-300 mb-3"><i class="fas fa-tachometer-alt mr-2"></i>FPS Modules</h2>
+            <div class="bg-gray-900/90 border border-teal-600 rounded-lg p-4 mb-4 shadow-lg">
+                <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-tachometer-alt mr-2"></i>FPS Modules</h2>
                 <div id="fps-module-items"></div>
             </div>
-            <div class="bg-gray-900/95 border border-teal-600 rounded-xl p-5 mb-5 shadow-xl hover:shadow-teal-500/20 transition-shadow duration-300">
+            <div class="bg-gray-900/90 border border-teal-600 rounded-lg p-4 mb-4 shadow-lg">
                 <div class="flex justify-between items-center">
-                    <h2 class="text-lg font-semibold text-teal-300 mb-3"><i class="fas fa-history mr-2"></i>Command Log</h2>
-                    <button id="clear-logs-btn" class="px-3 py-1 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-400 transition-colors duration-200 shadow-sm">Clear All Logs</button>
+                    <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-history mr-2"></i>Command Log</h2>
+                    <button id="clear-logs-btn" class="px-3 py-1 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-400 transition-colors">Clear All Logs</button>
                 </div>
                 <div id="log-list"></div>
             </div>
-        </section>
+        </div>
 
         <!-- Performance Tab Content -->
-        <section id="performance-content" class="tab-content hidden">
-            <div class="bg-gray-900/95 border border-teal-600 rounded-xl p-5 mb-5 shadow-xl hover:shadow-teal-500/20 transition-shadow duration-300">
-                <h2 class="text-lg font-semibold text-teal-300 mb-3"><i class="fas fa-bolt mr-2"></i>Performance Modules</h2>
+        <div id="performance-content" class="tab-content hidden">
+            <div class="bg-gray-900/90 border border-teal-600 rounded-lg p-4 mb-4 shadow-lg">
+                <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-bolt mr-2"></i>Performance Modules</h2>
                 <div id="module-items"></div>
             </div>
-            <div class="bg-gray-900/95 border border-teal-600 rounded-xl p-5 mb-5 shadow-xl hover:shadow-teal-500/20 transition-shadow duration-300">
+            <div class="bg-gray-900/90 border border-teal-600 rounded-lg p-4 mb-4 shadow-lg">
                 <div class="flex justify-between items-center">
-                    <h2 class="text-lg font-semibold text-teal-300 mb-3"><i class="fas fa-history mr-2"></i>Command Log</h2>
-                    <button id="clear-logs-btn-performance" class="px-3 py-1 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-400 transition-colors duration-200 shadow-sm">Clear All Logs</button>
+                    <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-history mr-2"></i>Command Log</h2>
+                    <button id="clear-logs-btn-performance" class="px-3 py-1 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-400 transition-colors">Clear All Logs</button>
                 </div>
                 <div id="log-list"></div>
             </div>
-        </section>
+        </div>
 
         <!-- Game Tab Content -->
-        <section id="game-content" class="tab-content hidden">
-            <div class="bg-gray-900/95 border border-teal-600 rounded-xl p-5 mb-5 shadow-xl hover:shadow-teal-500/20 transition-shadow duration-300">
-                <h2 class="text-lg font-semibold text-teal-300 mb-3"><i class="fas fa-gamepad mr-2"></i>Game Optimization</h2>
+        <div id="game-content" class="tab-content hidden">
+            <div class="bg-gray-900/90 border border-teal-600 rounded-lg p-4 mb-4 shadow-lg">
+                <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-gamepad mr-2"></i>Game Optimization</h2>
                 <div id="game-items"></div>
             </div>
-            <div class="bg-gray-900/95 border border-teal-600 rounded-xl p-5 mb-5 shadow-xl hover:shadow-teal-500/20 transition-shadow duration-300">
+            <div class="bg-gray-900/90 border border-teal-600 rounded-lg p-4 mb-4 shadow-lg">
                 <div class="flex justify-between items-center">
-                    <h2 class="text-lg font-semibold text-teal-300 mb-3"><i class="fas fa-history mr-2"></i>Command Log</h2>
-                    <button id="clear-logs-btn-game" class="px-3 py-1 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-400 transition-colors duration-200 shadow-sm">Clear All Logs</button>
+                    <h2 class="text-lg font-bold text-teal-300 mb-2"><i class="fas fa-history mr-2"></i>Command Log</h2>
+                    <button id="clear-logs-btn-game" class="px-3 py-1 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-400 transition-colors">Clear All Logs</button>
                 </div>
                 <div id="log-list"></div>
             </div>
-        </section>
-    </main>
+        </div>
+    </div>
 
-    <aside id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-gray-900/95 border-r border-teal-600 transform -translate-x-full transition-transform duration-300 z-20">
-        <div class="p-5">
-            <button id="sidebar-close" class="text-teal-400 hover:text-teal-300 mb-4 transition-colors duration-200" aria-label="Close Sidebar">
+    <div id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-gray-900/95 border-r border-teal-600 transform -translate-x-full transition-transform duration-300 z-20">
+        <div class="p-4">
+            <button id="sidebar-close" class="text-teal-400 hover:text-teal-300 mb-4 transition-colors">
                 <i class="fas fa-times text-lg"></i>
             </button>
-            <h2 class="text-lg font-semibold text-teal-300 mb-4"><i class="fas fa-bars mr-2"></i>Menu</h2>
+            <h2 class="text-lg font-bold text-teal-300 mb-4"><i class="fas fa-bars mr-2"></i>Menu</h2>
             <ul class="space-y-3">
-                <li><a href="#" class="flex items-center gap-2 text-teal-400 hover:text-teal-300 transition-colors duration-200"><i class="fas fa-info-circle"></i><span id="app-version">Version: Loading...</span></a></li>
-                <li><a href="#" class="flex items-center gap-2 text-teal-400 hover:text-teal-300 transition-colors duration-200"><i class="fas fa-star"></i><span>Rating: 4.5/5</span></a></li>
-                <li><a href="#" class="flex items-center gap-2 text-teal-400 hover:text-teal-300 transition-colors duration-200"><i class="fas fa-user"></i><span>Credit: Agung Developer</span></a></li>
-                <li><a href="https://link.dana.id/minta?full_url=https://qr.dana.id/v1/281012092025071835695915" class="flex items-center gap-2 text-teal-400 hover:text-teal-300 transition-colors duration-200" target="_blank" rel="noopener noreferrer"><i class="fas fa-donate"></i><span>Donate</span></a></li>
+                <li><a href="#" class="flex items-center gap-2 text-teal-400 hover:text-teal-300 transition-colors"><i class="fas fa-info-circle"></i><span id="app-version">Version: Loading...</span></a></li>
+                <li><a href="#" class="flex items-center gap-2 text-teal-400 hover:text-teal-300 transition-colors"><i class="fas fa-star"></i><span>Rating: 4.5/5</span></a></li>
+                <li><a href="#" class="flex items-center gap-2 text-teal-400 hover:text-teal-300 transition-colors"><i class="fas fa-user"></i><span>Credit: Agung Developer</span></a></li>
+                <li><a href="https://link.dana.id/minta?full_url=https://qr.dana.id/v1/281012092025071835695915" class="flex items-center gap-2 text-teal-400 hover:text-teal-300 transition-colors" target="_blank"><i class="fas fa-donate"></i><span>Donate</span></a></li>
             </ul>
         </div>
-        <div class="p-5 border-t border-gray-700 text-center">
+        <div class="p-4 border-t border-gray-700 text-center">
             <h3 class="text-md font-semibold text-teal-300 mb-2"><i class="fas fa-share-alt mr-2"></i>Follow Us</h3>
             <div class="flex justify-center gap-4 text-teal-400">
-                <a href="https://youtube.com/@neoninjectofficial?si=2JZi-XH7MyGX9xBX" class="hover:text-teal-300 text-xl transition-colors duration-200" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                <a href="https://www.tiktok.com/@neoninject?_t=ZS-8y7bsj0p15I&_r=1" class="hover:text-teal-300 text-xl transition-colors duration-200" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-                <a href="https://www.instagram.com/agungeka_22?igsh=dmo4YnR4dTF3cnhq" class="hover:text-teal-300 text-xl transition-colors duration-200" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="https://agungwandev.com" class="hover:text-teal-300 text-xl transition-colors duration-200" target="_blank" rel="noopener noreferrer" aria-label="Website"><i class="fas fa-globe"></i></a>
+                <a href="https://youtube.com/@neoninjectofficial?si=2JZi-XH7MyGX9xBX" class="hover:text-teal-300 text-xl transition-colors" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.tiktok.com/@neoninject?_t=ZS-8y7bsj0p15I&_r=1" class="hover:text-teal-300 text-xl transition-colors" target="_blank"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/agungeka_22?igsh=dmo4YnR4dTF3cnhq" class="hover:text-teal-300 text-xl transition-colors" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://agungwandev.com" class="hover:text-teal-300 text-xl transition-colors" target="_blank"><i class="fas fa-globe"></i></a>
             </div>
         </div>
-    </aside>
+    </div>
 
-    <nav class="bottom-nav fixed bottom-0 left-0 right-0 bg-gray-900/95 border-t border-teal-600 flex justify-around items-center h-16 z-20 shadow-lg">
-        <div class="nav-item active flex-1 text-center py-3 text-teal-400 hover:bg-gray-800 transition-colors duration-200" data-tab="home-content" aria-label="Home Tab">
+    <nav class="bottom-nav fixed bottom-0 left-0 right-0 bg-gray-900/95 border-t border-teal-600 flex justify-around items-center h-16 z-20">
+        <div class="nav-item active flex-1 text-center py-3 text-teal-400 hover:bg-gray-800 transition-colors" data-tab="home-content">
             <i class="fas fa-home text-lg"></i>
         </div>
-        <div class="nav-item flex-1 text-center py-3 text-teal-400 hover:bg-gray-800 transition-colors duration-200" data-tab="performance-content" aria-label="Performance Tab">
+        <div class="nav-item flex-1 text-center py-3 text-teal-400 hover:bg-gray-800 transition-colors" data-tab="performance-content">
             <i class="fas fa-bolt text-lg"></i>
         </div>
-        <div class="nav-item flex-1 text-center py-3 text-teal-400 hover:bg-gray-800 transition-colors duration-200" data-tab="game-content" aria-label="Game Tab">
+        <div class="nav-item flex-1 text-center py-3 text-teal-400 hover:bg-gray-800 transition-colors" data-tab="game-content">
             <i class="fas fa-gamepad text-lg"></i>
         </div>
     </nav>
 
-    <div id="download-modal" class="modal hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[1000]">
-        <div class="modal-content bg-gray-900/95 border border-teal-600 rounded-xl p-5 w-11/12 max-w-md shadow-xl">
-            <h2 id="modal-title" class="text-base font-semibold text-teal-300 mb-3"><i class="fas fa-download mr-2"></i>Processing...</h2>
+    <div id="download-modal" class="modal hidden fixed inset-0 bg-black/85 flex items-center justify-center z-[1000]">
+        <div class="modal-content bg-gray-900/90 border border-teal-600 rounded-lg p-4 w-11/12 max-w-md shadow-lg">
+            <h2 id="modal-title" class="text-base font-bold text-teal-300 mb-2"><i class="fas fa-download mr-2"></i>Processing...</h2>
             <div class="progress-bar h-2 bg-teal-500 rounded-full transition-all duration-300" id="modal-progress" style="width: 0%"></div>
             <p id="modal-status" class="mt-2 text-gray-300 text-xs"></p>
         </div>
     </div>
 
-    <div id="cmd-output-modal" class="cmd-output-modal hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[1000]">
-        <div class="cmd-output-content bg-gray-900/95 border border-teal-600 rounded-xl p-5 w-11/12 max-w-md shadow-xl">
-            <h2 class="text-base font-semibold text-teal-300 mb-3"><i class="fas fa-terminal mr-2"></i>Command Output</h2>
-            <pre id="cmd-output" class="cmd-output bg-gray-800/80 p-3 rounded-lg font-mono text-sm text-gray-300 max-h-[50vh] overflow-y-auto shadow-inner"></pre>
-            <button class="px-4 py-2 bg-teal-500 text-gray-900 rounded-lg font-semibold hover:bg-teal-400 transition-colors duration-200 mt-3 w-full shadow-sm" onclick="document.getElementById('cmd-output-modal').style.display='none'" aria-label="Close Command Output">Close</button>
+    <div id="cmd-output-modal" class="cmd-output-modal hidden fixed inset-0 bg-black/85 flex items-center justify-center z-[1000]">
+        <div class="cmd-output-content bg-gray-900/90 border border-teal-600 rounded-lg p-4 w-11/12 max-w-md shadow-lg">
+            <h2 class="text-base font-bold text-teal-300 mb-2"><i class="fas fa-terminal mr-2"></i>Command Output</h2>
+            <pre id="cmd-output" class="cmd-output bg-gray-800/70 p-3 rounded-lg font-mono text-sm text-gray-300 max-h-[50vh] overflow-y-auto"></pre>
+            <button class="px-3 py-1 bg-teal-500 text-gray-900 rounded-lg font-semibold hover:bg-teal-400 transition-colors mt-2 w-full" onclick="document.getElementById('cmd-output-modal').style.display='none'">Close</button>
         </div>
     </div>
 
     <div id="notification" class="notification hidden fixed top-4 left-1/2 transform -translate-x-1/2 bg-teal-500 text-gray-900 px-4 py-2 rounded-lg font-semibold max-w-[90%] shadow-lg z-[1001]"></div>
 
-    <div id="confirmation-modal" class="confirmation-modal hidden fixed inset-0 bg-black/90 flex items-center justify-center z-[1000]">
-        <div class="confirmation-content bg-gray-900/95 border border-teal-600 rounded-xl p-5 w-11/12 max-w-xs text-center shadow-xl">
-            <p id="confirmation-message" class="text-sm text-teal-200 mb-4"></p>
-            <div class="flex justify-center gap-3">
-                <button id="confirm-yes" class="px-4 py-1 bg-teal-500 text-gray-900 rounded-lg font-semibold hover:bg-teal-400 transition-colors duration-200 shadow-sm">Yes</button>
-                <button id="confirm-no" class="px-4 py-1 bg-gray-600 text-white rounded-lg font-semibold hover:bg-gray-500 transition-colors duration-200 shadow-sm">No</button>
+    <div id="confirmation-modal" class="confirmation-modal hidden fixed inset-0 bg-black/85 flex items-center justify-center z-[1000]">
+        <div class="confirmation-content bg-gray-900/90 border border-teal-600 rounded-lg p-4 w-11/12 max-w-xs text-center shadow-lg">
+            <p id="confirmation-message" class="text-sm text-teal-200 mb-3"></p>
+            <div class="flex justify-center gap-2">
+                <button id="confirm-yes" class="px-3 py-1 bg-teal-500 text-gray-900 rounded-lg font-semibold hover:bg-teal-400 transition-colors">Yes</button>
+                <button id="confirm-no" class="px-3 py-1 bg-gray-600 text-white rounded-lg font-semibold hover:bg-gray-500 transition-colors">No</button>
             </div>
         </div>
     </div>
 
-    <script src="https://agungdevlop.github.io/Neon-Modules/script.js" defer></script>
+    <script src="script.js"></script>
 </body>
 </html>
