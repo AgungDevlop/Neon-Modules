@@ -25,7 +25,7 @@ set_setting() {
 }
 
 # Initial notification
-cmd notification post -S bigtext -t 'FPS INJECTOR' 'Tag' 'Starting Performance Optimization.' >/dev/null 2>&1
+cmd notification post -S bigtext -t 'FPS UNLOCK by Agung Dev' 'Tag' 'Starting Performance Optimization.' >/dev/null 2>&1
 
 # Safety check (thermal only)
 echo "🛡️ Starting safety checks..."
@@ -267,4 +267,4 @@ echo ""
 sleep 0.5
 echo "█▓▒▒░░░THANKS FOR USING FRAME RATE CONTROLLER ░░░▒▒▓█"
 echo ""
-cmd notification post -S bigtext -t 'FPS INJECTOR' 'Tag' 'SUCCESS: Performance Optimized.' >/dev/null 2>&1
+cmd notification post -S bigtext -t 'FPS UNLOCK by Agung Dev' 'Tag' 'SUCCESS: Performance Optimized.' >/dev/null 2>&1
