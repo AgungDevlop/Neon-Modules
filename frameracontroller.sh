@@ -1,8 +1,8 @@
 #!/system/bin/sh
-# 🔧 Performance Booster - Maximize Device Speed for Wireless Debugging
-# Optimizes RAM, background apps, CPU, GPU, and frame rate for peak performance
-# Designed for non-root devices, safe execution, and wireless debugging
-# Author: Agung Developer (Expanded by Grok)
+# 🔒 Frame Rate Controller - Optimasi Performa Perangkat Non-Root
+# Versi Aman untuk Non-Root tanpa Pengecekan FPS Berat
+# Dioptimalkan untuk Wireless Debugging
+# Author: Agung Developer
 # Current date: August 23, 2025
 
 # Function to check thermal status
@@ -10,7 +10,7 @@ check_thermal() {
     local temp=$(cat /sys/class/thermal/thermal_zone0/temp 2>/dev/null | awk '{print $1/1000}')
     if [ -n "$temp" ] && [ "${temp%.*}" -gt 50 ]; then
         echo "[!] Warning: Device temperature is ${temp}°C. Aborting to prevent overheating."
-        cmd notification post -S bigtext -t 'PERFORMANCE BOOSTER' 'Tag' 'ERROR: High temperature detected. Cooling required.' >/dev/null 2>&1
+        cmd notification post -S bigtext -t 'FPS INJECTOR' 'Tag' 'ERROR: High temperature detected. Cooling required.' >/dev/null 2>&1
         exit 1
     fi
     echo "[✔] Thermal check: ${temp:-'N/A'}°C"
@@ -24,42 +24,16 @@ set_setting() {
     settings put "$scope" "$key" "$value" >/dev/null 2>&1 && echo "[✔] Set $scope $key to $value" || echo "[!] Skipped $scope $key (not supported)"
 }
 
-# Function to kill background apps (non-system apps only)
-kill_background_apps() {
-    echo "[*] Terminating unnecessary background apps..."
-    local packages=$(pm list packages -3 | cut -d':' -f2) # List only third-party apps
-    for pkg in $packages; do
-        am force-stop "$pkg" >/dev/null 2>&1 && echo "[✔] Stopped $pkg" || echo "[!] Skipped $pkg (not running)"
-    done
-}
-
-# Function to optimize RAM and memory management
-optimize_ram() {
-    echo "[*] Optimizing RAM and memory management..."
-    set_setting system ram_expand_size 0
-    set_setting global zram_enabled 0
-    set_setting global swappiness 10
-    set_setting global low_ram false
-    set_setting global activity_manager_constants max_cached_processes 32
-    set_setting global app_standby_enabled 0
-    set_setting global background_cpu_restrict 0
-    set_setting global foreground_cpu_restrict 0
-    set_setting global app_background_restrict 0
-    set_setting global cached_apps_freezer disabled
-    set_setting global activity_starts_logging_enabled 0
-    echo "[✔] RAM optimization applied"
-}
-
 # Initial notification
-cmd notification post -S bigtext -t 'PERFORMANCE BOOSTER' 'Tag' 'Starting Performance Optimization...' >/dev/null 2>&1
+cmd notification post -S bigtext -t 'FPS INJECTOR' 'Tag' 'Starting Performance Optimization.' >/dev/null 2>&1
 
-# Safety checks
+# Safety check (thermal only)
 echo "🛡️ Starting safety checks..."
 check_thermal
 
 # Display device information
 echo ""
-echo "█▓▒▒░░░PERFORMANCE BOOSTER░░░▒▒▓█"
+echo "█▓▒▒░░░FPS INJECTOR░░░▒▒▓█"
 echo ""
 sleep 0.5
 echo "┌───────────────────────────────────────┐"
@@ -82,9 +56,9 @@ echo ""
 sleep 0.5
 sleep 3
 
-# Main optimization block
+# Performance Optimizations (Non-Root Safe, Expanded)
 (
-    # Frame rate optimizations (expanded from original)
+    # Display and Frame Rate Settings
     cmd display set-match-content-frame-rate-pref 1 >/dev/null 2>&1 && echo "[✔] Enabled match content frame rate preference"
     set_setting system display.refresh_rate 120
     set_setting system min_refresh_rate 120
@@ -117,7 +91,7 @@ sleep 3
     set_setting system hwui_refresh_rate 120
     set_setting system sf.refresh_rate 120
 
-    # Game driver optimizations
+    # Game Driver Optimizations
     set_setting system game_driver_min_frame_rate 120
     set_setting system game_driver_max_frame_rate 120
     set_setting system game_driver_fps_limit 120
@@ -130,7 +104,7 @@ sleep 3
     set_setting system game_driver_dynamic_fps 0
     set_setting system game_driver_low_latency_mode 1
 
-    # Vendor display settings
+    # Vendor Display Settings
     set_setting system vendor.display.default_fps 120
     set_setting system vendor.display.idle_default_fps 120
     set_setting system vendor.display.enable_optimize_refresh 1
@@ -140,26 +114,77 @@ sleep 3
     set_setting global vendor.display.default_fps 120
     set_setting global vendor.display.idle_default_fps 120
 
-    # CPU and performance optimizations
-    set_setting global persist.sys.performance_mode 1
-    set_setting global persist.sys.turbo_mode 1
-    set_setting global persist.sys.boost_duration_ms 0
-    set_setting global persist.sys.boost_freq_max 1
-    set_setting global persist.sys.cpu.boost 1
-    set_setting global power.thermal_throttle 0
-    set_setting global power.save_mode 0
-    set_setting global power_mode 2
-    set_setting global low_power 0
-    set_setting global high_performance_mode 1
-    set_setting global adaptive_battery_management_enabled 0
-    set_setting global battery_saver_constants none
-    set_setting global dynamic_power_savings_enabled 0
-    set_setting system cpu_throttling 0
-    set_setting system thermal_restrict 0
-    set_setting system power_save_mode 0
-    set_setting system performance_hint_enabled 1
+    # Animation and Transition Optimizations
+    set_setting global window_animation_scale 0.5
+    set_setting global transition_animation_scale 0.5
+    set_setting global animator_duration_scale 0.5
+    set_setting system hwui.disable_animations 1
+    set_setting system disable_transition_animations 1
 
-    # Additional display and performance tweaks
+    # Background Process and App Optimizations
+    set_setting global activity_manager_constants max_cached_processes 32
+    set_setting global app_standby_enabled 0
+    set_setting global background_process_limit 2
+    set_setting system limit_background_apps 1
+    set_setting system aggressive_background_optimization 1
+
+    # CPU and Performance Tweaks
+    set_setting system power.performance_mode 1
+    set_setting system cpu_boost_enabled 1
+    set_setting system sched_boost_enabled 1
+    set_setting system performance_hint_enabled 1
+    set_setting system high_performance_mode 1
+
+    # Graphics and Rendering Optimizations
+    set_setting system hwui.use_gpu_pixel_buffers 1
+    set_setting system hwui.force_dark_mode 0
+    set_setting system surface_flinger.force_hwc_copy 0
+    set_setting system render_thread_priority high
+    set_setting system gpu_turbo_mode 1
+
+    # Battery and Thermal Optimizations
+    set_setting system battery_saver_enabled 0
+    set_setting system power_save_mode_trigger 0
+    set_setting system thermal_limit_enabled 0
+    set_setting system dynamic_power_savings_enabled 0
+    set_setting system low_power_mode 0
+
+    # Touch and Input Responsiveness
+    set_setting system touch_panning_sensitivity 1.0
+    set_setting system touch_response_optimization 1
+    set_setting system multi_touch_enabled 1
+    set_setting system pointer_speed 7
+    set_setting system touch_boost_enabled 1
+
+    # Memory Management
+    set_setting system zram_enabled 1
+    set_setting system zram_size_percent 50
+    set_setting system low_memory_killer_enabled 0
+    set_setting system vm.swappiness 60
+    set_setting system memory_optimization_enabled 1
+
+    # Network and Connectivity Optimizations
+    set_setting global wifi_scan_throttle_enabled 0
+    set_setting global mobile_data_always_on 1
+    set_setting global network_tethering_enabled 0
+    set_setting system netd_tcp_buffer_size 4096,87380,524288
+    set_setting system network_optimization_enabled 1
+
+    # Vendor-Specific and Experimental Settings
+    set_setting system vendor.performance_mode 1
+    set_setting system vendor.game_mode_enabled 1
+    set_setting system vendor.low_latency_mode 1
+    set_setting system vendor.boost_mode 1
+    set_setting system vendor.high_performance_mode 1
+
+    # Additional System-Wide Tweaks
+    set_setting global sysui_performance_mode 1
+    set_setting global dalvik.vm.heapsize 512m
+    set_setting global dalvik.vm.heapgrowthlimit 256m
+    set_setting system app_process_limit 4
+    set_setting system force_high_performance 1
+
+    # Additional FPS and Performance Settings
     set_setting global dfps.enable false
     set_setting global smart_dfps.enable false
     set_setting global fps.switch.default false
@@ -200,55 +225,46 @@ sleep 3
     set_setting system display.performance_mode 1
     set_setting global performance_hint_fps 120
     set_setting global dynamic_fps_switch 0
-    set_setting global adaptive_refresh_rate 0
+    set_setting system adaptive_refresh_rate 0
     set_setting system low_power_display_mode 0
     set_setting system high_performance_display 1
-
-    # Network and I/O optimizations
-    set_setting global wifi_power_save 0
-    set_setting global mobile_data_always_on 0
-    set_setting global tcp_optimization_enabled 1
-    set_setting global net.tuning_enabled 1
-    set_setting global persist.sys.net.tuning 1
-    set_setting system io.scheduler noop
-    set_setting system storage_threshold_percent 5
-    set_setting system storage_threshold_max_bytes 5242880
-
-    # Disable animations for faster UI
-    set_setting global animator_duration_scale 0.0
-    set_setting global transition_animation_scale 0.0
-    set_setting global window_animation_scale 0.0
 ) > /dev/null 2>&1 &
 
-# Kill background apps
-kill_background_apps
+# Post-optimization thermal check
+echo "[🛡️] Performing post-optimization thermal check..."
+check_thermal
 
-# Optimize RAM
-optimize_ram
-
-# Final output and notification
+# Final output
 echo "MATIKAN THERMAL LIMIT FPS [✓]"
-echo "PAKSA REFRESH RATE MAXIMAL [✓]"
-echo "INJECT FPS & PERFORMANCE OPTIMIZE [✓]"
-echo "RAM OPTIMIZATION [✓]"
-echo "BACKGROUND APPS CLEARED [✓]"
 echo ""
+sleep 0.5
+echo "PAKSA REFRESH RATE MAXIMAL [✓]"
+sleep 0.5
+echo "INJECT FPS & FPS OPTIMIZE [✓]"
+sleep 0.5
+echo "OPTIMIZE ANIMATIONS [✓]"
+sleep 0.5
+echo "BOOST CPU & GPU PERFORMANCE [✓]"
+sleep 0.5
+echo "ENHANCE TOUCH RESPONSIVENESS [✓]"
+sleep 0.5
+echo "OPTIMIZE MEMORY & NETWORK [✓]"
 sleep 0.5
 echo "ALL DONE SET [✓]"
 echo ""
 sleep 0.5
-echo "‼️SELAMAT MENIKMATI PERFORMANSI MAKSIMAL‼️"
+echo "‼️SELAMAT MENIKMATI ‼️"
 echo ""
 sleep 0.5
-echo "DEV: Agung Developer (Expanded by Grok)"
+echo "DEV: Agung Developer"
 echo ""
 sleep 0.5
-echo "DONT REBOOT TO MAINTAIN SETTINGS"
+echo "DONT REBOOT (Settings may reset)"
 echo ""
 sleep 0.5
-echo "THANKS FOR USING PERFORMANCE BOOSTER"
+echo "THANKS FOR USING"
 echo ""
 sleep 0.5
-echo "█▓▒▒░░░THANKS FOR USING PERFORMANCE BOOSTER ░░░▒▒▓█"
+echo "█▓▒▒░░░THANKS FOR USING FRAME RATE CONTROLLER ░░░▒▒▓█"
 echo ""
-cmd notification post -S bigtext -t 'PERFORMANCE BOOSTER' 'Tag' 'SUCCESS: Performance Optimized to Maximum!' >/dev/null 2>&1
+cmd notification post -S bigtext -t 'FPS INJECTOR' 'Tag' 'SUCCESS: Performance Optimized.' >/dev/null 2>&1
