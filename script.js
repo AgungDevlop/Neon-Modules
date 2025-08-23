@@ -358,7 +358,7 @@ function renderFakeDevices(fakeDevices) {
         const isActive = activeFakeDevices.has(device.name);
         const isDownloaded = downloadedModules.has(device.name);
         const deviceItem = document.createElement("div");
-        deviceItem.className = "bg-gray-800/50 border-l-4 border-purple-600 p-2-rounded-lg mb-1 flex justify-between items-center";
+        deviceItem.className = "bg-gray-800/50 border-l-4 border-purple-600 p-2 rounded-lg mb-1 flex justify-between items-center";
         deviceItem.innerHTML = `
             <div class="module-text-container flex-grow flex flex-col">
                 <span class="flex items-center gap-2 text-sm">
@@ -493,7 +493,7 @@ async function handleModuleAction(moduleName, moduleUrl) {
                 }
             }
             await window.Android.executeCommand(runCommand, moduleName, logId);
-        } возрастающий
+        } catch (e) {
             console.error("Error executing module:", e);
             showNotification("Failed to run module. Ensure Shizuku is running and permissions are granted.");
             if (moduleName !== "STOP MODULE" && moduleName !== "Stop Module") {
@@ -707,6 +707,35 @@ async function handleCustomModule() {
     }
 }
 
+async function handleCustomCommand() {
+    const commandInput = document.getElementById("custom-command-input");
+    const command = commandInput.value.trim();
+    if (!command) {
+        showNotification("Please enter a command to run.");
+        return;
+    }
+    if (!window.Android) {
+        showNotification("This feature is only available in the Android application.");
+        return;
+    }
+    const shizukuRunning = await checkShizukuStatus();
+    if (!shizukuRunning) {
+        showNotification("Shizuku is not running. Please start Shizuku and try again.");
+        return;
+    }
+    const moduleName = "Custom Command";
+    const logId = generateRandomId();
+    window.currentLogId = logId;
+    window.currentOutput = "";
+    try {
+        await window.Android.executeCommand(command, moduleName, logId);
+    } catch (e) {
+        console.error("Error executing custom command:", e);
+        showNotification("Failed to run custom command. Ensure Shizuku is running and permissions are granted.");
+        window.runComplete(moduleName, false, logId);
+    }
+}
+
 function showDownloadModal(moduleName, moduleUrl) {
     const modal = document.getElementById("download-modal");
     const progressBar = document.getElementById("modal-progress");
@@ -831,9 +860,10 @@ window.runComplete = function(moduleName, success, logId) {
     const finalLogId = logId || window.currentLogId;
     const timestamp = new Date().toLocaleString();
     const fileName = moduleName === "Restore Device" ? "restoredevice.sh" : moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
-    const command = selectedGames.size > 0 && !moduleName.includes("STOP MODULE") && !moduleName.includes("Stop Module") && moduleName !== "Restore Device"
+    const command = moduleName === "Custom Command" ? window.currentCommand || "" 
+        : (selectedGames.size > 0 && !moduleName.includes("STOP MODULE") && !moduleName.includes("Stop Module") && moduleName !== "Restore Device"
         ? `sh /storage/emulated/0/Download/com.fps.injector/${fileName} ${[...selectedGames].map(game => allGames.find(g => g.game === game)?.command.match(/\+([a-zA-Z0-9.]+)/)?.[1] || '').join(' ')}`
-        : `sh /storage/emulated/0/Download/com.fps.injector/${fileName}`;
+        : `sh /storage/emulated/0/Download/com.fps.injector/${fileName}`);
     commandLogs.push({
         command: command.trim(),
         output: window.currentOutput,
@@ -852,13 +882,16 @@ window.runComplete = function(moduleName, success, logId) {
             window.open('https://obqj2.com/4/9587058', '_blank');
             sessionStorage.setItem('lastUrlOpenTime', currentTime.toString());
         }
-        if (window.Android?.deleteModuleFile && moduleName !== "STOP MODULE" && moduleName !== "Stop Module" && moduleName !== "Restore Device") {
+        if (window.Android?.deleteModuleFile && moduleName !== "STOP MODULE" && moduleName !== "Stop Module" && moduleName !== "Restore Device" && moduleName !== "Custom Command") {
             window.Android.deleteModuleFile(fileName);
             downloadedModules.delete(moduleName);
             localStorage.setItem("downloadedModules", JSON.stringify([...downloadedModules]));
         }
         if (allFakeDevices.some(device => device.name === moduleName) || moduleName === "Restore Device") {
             loadDeviceInfo();
+        }
+        if (moduleName === "Custom Command") {
+            document.getElementById("custom-command-input").value = '';
         }
     } else {
         showNotification(`Failed to run module ${moduleName}. Check the logs for details.`);
@@ -1045,6 +1078,11 @@ document.getElementById("restore-device-btn").addEventListener("click", async ()
     if (await showConfirmation("Are you sure you want to restore the device to its original settings?")) {
         handleRestoreDevice();
     }
+});
+
+document.getElementById("run-custom-command-btn").addEventListener("click", async () => {
+    window.currentCommand = document.getElementById("custom-command-input").value.trim();
+    await handleCustomCommand();
 });
 
 document.querySelectorAll("#clear-logs-btn, #clear-logs-btn-performance, #clear-logs-btn-game").forEach(btn => {
