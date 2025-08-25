@@ -1,9 +1,11 @@
 {
-  "latestVersion": "1.1",
+  "latestVersion": "1.2",
   "releaseNotes": [
-    "Perbaikan bug minor dan peningkatan stabilitas.",
-    "Penambahan modul performa baru.",
-    "Pembaruan antarmuka pengguna pada tab dashboard.",
-    "Optimalisasi penggunaan memori."
+    "Fixed a bug causing a blank white page.",
+    "Significantly improved app speed.",
+    "Minor bug fixes and stability improvements.",
+    "Added a new performance module.",
+    "Updated user interface on the dashboard tab.",
+    "Optimized memory usage."
   ]
 }
