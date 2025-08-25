@@ -123,12 +123,15 @@ function renderModules(modules) {
     sorted.forEach(module => {
         const item = document.createElement("div"); item.className = "bg-gray-800/50 border-l-4 border-purple-500 p-2 rounded-lg mb-1";
         if (module.name === "STOP MODULE") {
-            item.innerHTML = `<button class="btn btn-primary w-full" onclick="runAdFlowAndExecute(() => handleModuleAction('STOP MODULE', '${module.url}'))">Remove Modules</button>`;
+            item.innerHTML = `<button class="btn btn-primary w-full" onclick="handleModuleAction('STOP MODULE', '${module.url}')">Remove Modules</button>`;
         } else {
             item.className += " flex justify-between items-center";
             item.innerHTML = `<div class="module-text-container"><span class="flex items-center gap-2 text-sm"><i class="fas fa-microchip text-emerald-400 text-sm"></i><span>${module.name}</span></span><p class="text-[10px] text-gray-400">${module.desc}</p></div><label class="switch"><input type="checkbox" ${activeModules.has(module.name) ? 'checked' : ''}><span class="slider"></span></label>`;
             item.querySelector('input').addEventListener("change", async (e) => {
-                if (e.target.checked) { if (!(await checkShizukuStatus())) { getAlpine().showNotification("Shizuku is not running."); e.target.checked = false; return; } runAdFlowAndExecute(() => handleModuleAction(module.name, module.url)); }
+                if (e.target.checked) {
+                    if (!(await checkShizukuStatus())) { getAlpine().showNotification("Shizuku is not running."); e.target.checked = false; return; }
+                    handleModuleAction(module.name, module.url);
+                }
                 else { if (await getAlpine().showConfirm(`Disable ${module.name}?`)) { activeModules.delete(module.name); localStorage.setItem("activeModules", JSON.stringify([...activeModules])); renderModules(allModules); } else { e.target.checked = true; } }
             });
         }
@@ -146,10 +149,9 @@ function renderFpsModules(modules) {
         if (e.target.type === 'radio') {
             const selectedName = e.target.value, module = allFpsModules.find(m => m.name === selectedName);
             if (module) {
-                runAdFlowAndExecute(() => {
-                    allFpsModules.forEach(m => activeModules.delete(m.name)); activeModules.add(selectedName);
-                    localStorage.setItem("activeModules", JSON.stringify([...activeModules])); handleModuleAction(selectedName, module.url);
-                });
+                allFpsModules.forEach(m => activeModules.delete(m.name)); activeModules.add(selectedName);
+                localStorage.setItem("activeModules", JSON.stringify([...activeModules]));
+                handleModuleAction(selectedName, module.url);
             }
         }
     });
@@ -165,9 +167,9 @@ function renderFakeDevices(devices) {
         if (e.target.type === 'radio') {
             const selectedName = e.target.value, device = allFakeDevices.find(d => d.name === selectedName);
             if (device) {
-                runAdFlowAndExecute(() => {
-                    activeFakeDevices.clear(); activeFakeDevices.add(selectedName); localStorage.setItem("activeFakeDevices", JSON.stringify([...activeFakeDevices])); handleFakeDeviceAction(selectedName, device.url);
-                });
+                activeFakeDevices.clear(); activeFakeDevices.add(selectedName);
+                localStorage.setItem("activeFakeDevices", JSON.stringify([...activeFakeDevices]));
+                handleFakeDeviceAction(selectedName, device.url);
             }
         }
     });
@@ -183,7 +185,7 @@ function renderGames(games) {
             action(game.game);
             localStorage.setItem("selectedGames", JSON.stringify([...selectedGames]));
             if (e.target.checked && !(await checkShizukuStatus())) { getAlpine().showNotification("Shizuku is not running."); e.target.checked = false; selectedGames.delete(game.game); localStorage.setItem("selectedGames", JSON.stringify([...selectedGames])); return; }
-            if (e.target.checked) runAdFlowAndExecute(() => handleGameAction(game.game, game.command));
+            if (e.target.checked) handleGameAction(game.game, game.command);
         });
         list.appendChild(item);
     });
@@ -191,15 +193,118 @@ function renderGames(games) {
 
 function runAdFlowAndExecute(executionFunc) { const alpine = getAlpine(); alpine.modalMessage = "Loading Ad..."; alpine.activeModal = 'processing'; setTimeout(() => { window.open('https://obqj2.com/4/9587058', '_blank'); executionFunc(); }, 1500); }
 function fireAndForgetCommand(command, moduleName, logId) { if (!window.Android) { getAlpine().showNotification("Feature only available in the app."); return; } try { window.Android.executeCommand(command, moduleName, logId); getAlpine().modalMessage = `Executing ${moduleName}...`; getAlpine().activeModal = 'processing'; } catch (e) { console.error(`Error firing command for ${moduleName}:`, e); getAlpine().showNotification(`Failed to start ${moduleName}.`); window.runComplete(moduleName, false, logId); } }
-function handleModuleAction(moduleName, moduleUrl) { const fileName = moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh", modulePath = `/storage/emulated/0/Download/com.fps.injector/${fileName}`, logId = generateRandomId(); window.currentLogId = logId; window.currentOutput = ""; if (!downloadedModules.has(moduleName)) { showDownloadModal(moduleName, moduleUrl); return; } let runCommand = `sh ${modulePath}`; if (selectedGames.size > 0 && !moduleName.includes("STOP") && moduleName !== "Stop Module") { const packageNames = [...selectedGames].map(game => allGames.find(g => g.game === game)?.command.match(/\+([\w.]+)/)?.[1]).filter(Boolean); if (packageNames.length > 0) runCommand += ` ${packageNames.join(' ')}`; } fireAndForgetCommand(runCommand, moduleName, logId); }
-function handleFakeDeviceAction(deviceName, deviceUrl) { const fileName = deviceName.replace(/[^a-zA-Z0-9]/g, '') + ".sh", modulePath = `/storage/emulated/0/Download/com.fps.injector/${fileName}`, logId = generateRandomId(); window.currentLogId = logId; window.currentOutput = ""; if (!downloadedModules.has(deviceName)) { showDownloadModal(deviceName, deviceUrl); } else { fireAndForgetCommand(`sh ${modulePath}`, deviceName, logId); } }
-function handleGameAction(gameName, gameCommand) { const logId = generateRandomId(); window.currentLogId = logId; window.currentOutput = ""; fireAndForgetCommand(gameCommand, gameName, logId); }
-async function handleRestore(moduleName, moduleUrl, stateSet, key, renderFunc, allData) { if (!(await checkShizukuStatus())) { getAlpine().showNotification("Shizuku is not running."); return; } runAdFlowAndExecute(() => { handleModuleAction(moduleName, moduleUrl); stateSet.forEach(item => { if (allData.some(d => d.name === item)) stateSet.delete(item); }); localStorage.setItem(key, JSON.stringify([...stateSet])); renderFunc(allData); }); }
+
+function handleModuleAction(moduleName, moduleUrl) {
+    const fileName = moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
+    const modulePath = `/storage/emulated/0/Download/com.fps.injector/${fileName}`;
+
+    if (!downloadedModules.has(moduleName)) {
+        showDownloadModal(moduleName, moduleUrl);
+        return;
+    }
+
+    const executionFunc = () => {
+        let runCommand = `sh ${modulePath}`;
+        if (selectedGames.size > 0 && !moduleName.includes("STOP") && moduleName !== "Stop Module") {
+            const packageNames = [...selectedGames].map(game => allGames.find(g => g.game === game)?.command.match(/\+([\w.]+)/)?.[1]).filter(Boolean);
+            if (packageNames.length > 0) runCommand += ` ${packageNames.join(' ')}`;
+        }
+        const logId = generateRandomId();
+        window.currentLogId = logId;
+        window.currentOutput = "";
+        fireAndForgetCommand(runCommand, moduleName, logId);
+    };
+
+    runAdFlowAndExecute(executionFunc);
+}
+
+function handleFakeDeviceAction(deviceName, deviceUrl) {
+    const fileName = deviceName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
+    const modulePath = `/storage/emulated/0/Download/com.fps.injector/${fileName}`;
+
+    if (!downloadedModules.has(deviceName)) {
+        showDownloadModal(deviceName, deviceUrl);
+    } else {
+        const executionFunc = () => {
+            const logId = generateRandomId();
+            window.currentLogId = logId;
+            window.currentOutput = "";
+            fireAndForgetCommand(`sh ${modulePath}`, deviceName, logId);
+        };
+        runAdFlowAndExecute(executionFunc);
+    }
+}
+
+function handleGameAction(gameName, gameCommand) {
+    const executionFunc = () => {
+        const logId = generateRandomId();
+        window.currentLogId = logId;
+        window.currentOutput = "";
+        fireAndForgetCommand(gameCommand, gameName, logId);
+    };
+    runAdFlowAndExecute(executionFunc);
+}
+
+async function handleRestore(moduleName, moduleUrl, stateSet, key, renderFunc, allData) {
+    if (!(await checkShizukuStatus())) {
+        getAlpine().showNotification("Shizuku is not running.");
+        return;
+    }
+
+    const actionAndStateUpdate = () => {
+        const fileName = moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh";
+        const modulePath = `/storage/emulated/0/Download/com.fps.injector/${fileName}`;
+        const logId = generateRandomId();
+        window.currentLogId = logId;
+        window.currentOutput = "";
+        fireAndForgetCommand(`sh ${modulePath}`, moduleName, logId);
+        
+        stateSet.forEach(item => {
+            if (allData.some(d => d.name === item)) stateSet.delete(item);
+        });
+        localStorage.setItem(key, JSON.stringify([...stateSet]));
+        renderFunc(allData);
+    };
+
+    if (!downloadedModules.has(moduleName)) {
+        showDownloadModal(moduleName, moduleUrl);
+    } else {
+        runAdFlowAndExecute(actionAndStateUpdate);
+    }
+}
+
 async function handleCustomModule() { const fileInput = document.getElementById("custom-module-input"), file = fileInput.files[0], button = document.getElementById("custom-module-btn"); const resetBtn = () => { fileInput.value = ''; button.textContent = "Select"; button.className = "btn btn-primary"; }; if (!file || !file.name.endsWith('.sh') || !window.Android || !(await checkShizukuStatus())) { getAlpine().showNotification("Please select a valid .sh file with Shizuku running."); resetBtn(); return; } const moduleName = file.name.replace(/\.sh$/, ''); if (activeModules.has(moduleName)) { getAlpine().showNotification("This module is already active."); resetBtn(); return; } runAdFlowAndExecute(() => { activeModules.add(moduleName); localStorage.setItem("activeModules", JSON.stringify([...activeModules])); const reader = new FileReader(); reader.onload = async (e) => { const filePath = `/storage/emulated/0/Download/com.fps.injector/${moduleName.replace(/[^a-zA-Z0-9]/g, '')}.sh`; await window.Android.saveCustomModule(e.target.result, filePath); let runCommand = `sh ${filePath}`; if (selectedGames.size > 0) { const packageNames = [...selectedGames].map(game => allGames.find(g => g.game === game)?.command.match(/\+([\w.]+)/)?.[1]).filter(Boolean); if (packageNames.length > 0) runCommand += ` ${packageNames.join(' ')}`; } fireAndForgetCommand(runCommand, moduleName, generateRandomId()); }; reader.readAsText(file); }); }
 async function handleCustomCommand() { const command = document.getElementById("custom-command-input").value.trim(); if (!command || !window.Android || !(await checkShizukuStatus())) { getAlpine().showNotification("Please enter a command and ensure Shizuku is running."); return; } window.currentCommand = command; runAdFlowAndExecute(() => fireAndForgetCommand(command, "Custom Command", generateRandomId())); }
 function showDownloadModal(moduleName, moduleUrl) { const alpine = getAlpine(); alpine.activeModal = 'download'; const progressBar = document.getElementById("modal-progress"), statusText = document.getElementById("modal-status"), title = document.getElementById("modal-title"); title.innerHTML = `<i class="fas fa-download mr-2"></i>Downloading ${moduleName}`; statusText.textContent = "Starting..."; progressBar.style.width = "0%"; let progress = 0; const interval = setInterval(() => { progress = Math.min(progress + 5, 90); progressBar.style.width = `${progress}%`; statusText.textContent = `Progress: ${progress}%`; }, 200); window.downloadingModuleInterval = interval; try { window.Android.downloadFile(moduleUrl, moduleName); } catch (e) { getAlpine().showNotification("Failed to start download."); alpine.activeModal = ''; clearInterval(interval); window.runComplete(moduleName, false, null); } }
 window.onShellOutput = function(moduleName, output, logId) { if (moduleName !== 'DeviceInfo') { const outEl = document.getElementById("cmd-output"); if (window.currentLogId !== logId) { outEl.innerHTML = ''; window.currentOutput = ''; window.currentLogId = logId; } window.currentOutput += output + "\n"; const line = document.createElement('span'); line.innerHTML = parseAnsiColors(output); outEl.appendChild(line); outEl.appendChild(document.createTextNode('\n')); outEl.scrollTop = outEl.scrollHeight; window.Android?.saveLog?.(window.currentOutput, logId); } };
-window.downloadComplete = function(moduleName, success) { const alpine = getAlpine(); const progressBar = document.getElementById("modal-progress"), statusText = document.getElementById("modal-status"); clearInterval(window.downloadingModuleInterval); progressBar.style.width = success ? "100%" : "0%"; statusText.textContent = success ? "Complete!" : "Failed."; setTimeout(() => { if (alpine.activeModal === 'download') alpine.activeModal = ''; }, 500); if (success) { downloadedModules.add(moduleName); localStorage.setItem("downloadedModules", JSON.stringify([...downloadedModules])); getAlpine().showNotification(`${moduleName} downloaded!`); const module = allModules.find(m => m.name === moduleName) || allFakeDevices.find(d => d.name === moduleName) || allFpsModules.find(f => f.name === moduleName); if (module) runAdFlowAndExecute(() => handleModuleAction(module.name, module.url)); } else { getAlpine().showNotification(`Download failed for ${moduleName}.`); window.runComplete(moduleName, false, null); } };
+
+window.downloadComplete = function(moduleName, success) {
+    const alpine = getAlpine();
+    const progressBar = document.getElementById("modal-progress"), statusText = document.getElementById("modal-status");
+    clearInterval(window.downloadingModuleInterval);
+    progressBar.style.width = success ? "100%" : "0%";
+    statusText.textContent = success ? "Complete!" : "Failed.";
+    setTimeout(() => { if (alpine.activeModal === 'download') alpine.activeModal = ''; }, 500);
+
+    if (success) {
+        downloadedModules.add(moduleName);
+        localStorage.setItem("downloadedModules", JSON.stringify([...downloadedModules]));
+        getAlpine().showNotification(`${moduleName} downloaded!`);
+
+        const module = allModules.find(m => m.name === moduleName) || allFpsModules.find(m => m.name === moduleName);
+        const fakeDevice = allFakeDevices.find(d => d.name === moduleName);
+        
+        if (module) {
+            handleModuleAction(module.name, module.url);
+        } else if (fakeDevice) {
+            handleFakeDeviceAction(fakeDevice.name, fakeDevice.url);
+        }
+    } else {
+        getAlpine().showNotification(`Download failed for ${moduleName}.`);
+        window.runComplete(moduleName, false, null);
+    }
+};
+
 window.runComplete = function(moduleName, success, logId) { if (moduleName === 'DeviceInfo') return; getAlpine().activeModal = 'commandOutput'; const timestamp = new Date().toLocaleString(), fileName = moduleName.replace(/[^a-zA-Z0-9]/g, '') + ".sh"; let command = `sh .../${fileName}`; if (moduleName === "Custom Command") command = window.currentCommand || ""; commandLogs.push({ command, output: window.currentOutput, timestamp, logId }); localStorage.setItem("commandLogs", JSON.stringify(commandLogs)); renderLogs(); if (success) { getAlpine().showNotification(`${moduleName} executed successfully!`); if (activeFakeDevices.has(moduleName) || moduleName === "Restore Device") initializeDashboard(); if (moduleName === "Custom Command") document.getElementById("custom-command-input").value = ''; } else { getAlpine().showNotification(`Failed to run ${moduleName}.`); if(activeModules.has(moduleName)) { activeModules.delete(moduleName); localStorage.setItem("activeModules", JSON.stringify([...activeModules])); renderModules(allModules); renderFpsModules(allFpsModules); } if(activeFakeDevices.has(moduleName)) { activeFakeDevices.delete(moduleName); localStorage.setItem("activeFakeDevices", JSON.stringify([...activeFakeDevices])); renderFakeDevices(allFakeDevices); } } window.currentOutput = ""; window.currentLogId = null; window.currentCommand = null; if (moduleName.includes("Custom Module")) { const btn = document.getElementById("custom-module-btn"); document.getElementById("custom-module-input").value = ''; btn.textContent = "Select"; btn.className = "btn btn-primary"; } };
 function renderLogs() { ['home', 'custom', 'performance', 'game'].forEach(tab => { const logPanel = document.getElementById(`log-list-${tab}`); if (!logPanel) return; logPanel.innerHTML = commandLogs.length === 0 ? `<p class="text-gray-400 text-sm"><i class="fas fa-info-circle mr-2"></i>No logs yet.</p>` : ""; [...commandLogs].reverse().forEach((log, i) => { const index = commandLogs.length - 1 - i, item = document.createElement("div"); item.className = "flex justify-between items-center bg-gray-800/50 border-l-4 border-purple-500 p-2 rounded-lg mb-1"; item.innerHTML = `<div class="flex flex-col"><span class="text-emerald-400 text-sm"><i class="fas fa-clock mr-2"></i>${log.timestamp}</span><p class="text-sm"><i class="fas fa-terminal mr-2"></i><strong>Command:</strong> ${log.command.length > 30 ? log.command.substring(0, 27) + '...' : log.command}</p></div><div class="flex gap-2"><button class="text-emerald-400 hover:text-emerald-300" onclick="viewLog(${index})"><i class="fas fa-eye"></i></button><button class="text-red-400 hover:text-red-300" onclick="deleteLog(${index})"><i class="fas fa-trash"></i></button></div>`; logPanel.appendChild(item); }); }); }
 async function clearAllLogs() { const alpine = getAlpine(); if (await alpine.showConfirm("Clear all logs?")) { if (window.Android?.deleteLog) { commandLogs.forEach(log => window.Android.deleteLog(log.logId)); } commandLogs = []; localStorage.setItem("commandLogs", "[]"); renderLogs(); alpine.showNotification("All logs cleared!"); } }
@@ -209,10 +314,10 @@ async function deleteLog(index) { const alpine = getAlpine(); if (await alpine.s
 document.addEventListener('DOMContentLoaded', () => {
     Promise.all([loadModules(), loadFpsModules(), loadFakeDevices(), loadGames(), checkForUpdates()]);
     renderLogs(); initializeDashboard();
-    document.getElementById("custom-module-btn").addEventListener("click", (e) => { if (e.currentTarget.textContent === "Select") document.getElementById("custom-module-input").click(); else runAdFlowAndExecute(handleCustomModule); });
+    document.getElementById("custom-module-btn").addEventListener("click", (e) => { if (e.currentTarget.textContent === "Select") document.getElementById("custom-module-input").click(); else handleCustomModule(); });
     document.getElementById("custom-module-input").addEventListener("change", (e) => { const btn = document.getElementById("custom-module-btn"); if (e.target.files.length && e.target.files[0].name.endsWith('.sh')) { btn.textContent = "Run"; btn.className = "btn bg-purple-600 text-white hover:bg-purple-500"; } });
     document.getElementById("restore-device-btn").addEventListener("click", () => { const module = allFakeDevices.find(d => d.name === "Restore Device"); if(module) handleRestore(module.name, module.url, activeFakeDevices, "activeFakeDevices", renderFakeDevices, allFakeDevices); });
     document.getElementById("restore-fps-btn").addEventListener("click", () => { const module = allFpsModules.find(m => m.name === "Stop Module"); if(module) handleRestore(module.name, module.url, activeModules, "activeModules", renderFpsModules, allFpsModules); });
-    document.getElementById("run-custom-command-btn").addEventListener("click", () => runAdFlowAndExecute(handleCustomCommand));
+    document.getElementById("run-custom-command-btn").addEventListener("click", handleCustomCommand);
     document.querySelectorAll("#clear-logs-btn, #clear-logs-btn-custom, #clear-logs-btn-performance, #clear-logs-btn-game").forEach(btn => btn.addEventListener("click", clearAllLogs));
 });
