@@ -312,6 +312,7 @@ function viewLog(index) { const log = commandLogs[index], alpine = getAlpine(); 
 async function deleteLog(index) { const alpine = getAlpine(); if (await alpine.showConfirm("Delete this log?")) { const log = commandLogs.splice(index, 1)[0]; if (window.Android?.deleteLog) window.Android.deleteLog(log.logId); localStorage.setItem("commandLogs", JSON.stringify(commandLogs)); renderLogs(); alpine.showNotification("Log deleted!"); } }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Kode aplikasi yang sudah ada
     Promise.all([loadModules(), loadFpsModules(), loadFakeDevices(), loadGames(), checkForUpdates()]);
     renderLogs(); initializeDashboard();
     document.getElementById("custom-module-btn").addEventListener("click", (e) => { if (e.currentTarget.textContent === "Select") document.getElementById("custom-module-input").click(); else handleCustomModule(); });

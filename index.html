@@ -10,14 +10,14 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body x-data="app()" class="bg-gray-900 text-gray-200 font-exo min-h-screen flex flex-col">
-    <div id="background-animation"></div>
+<body x-data="app()" class="text-gray-200 font-exo min-h-screen flex flex-col">
+    <!-- Konten Utama Aplikasi -->
     <div class="container mx-auto max-w-4xl px-4 sm:px-6 py-6 flex-grow relative z-10">
         <header class="flex flex-col sm:flex-row justify-between items-center mb-6">
             <button @click="sidebarOpen = true" class="text-emerald-400 hover:text-emerald-300 sm:mr-4 transition-colors">
                 <i class="fas fa-bars text-lg"></i>
             </button>
-            <h1 class="text-2xl sm:text-3xl font-bold text-emerald-300 text-center">Neon Magisk Module</h1>
+            <h1 id="main-title" class="text-2xl sm:text-3xl font-bold text-emerald-300 text-center">Neon Magisk Module</h1>
             <div id="shizuku-status" class="flex items-center gap-2 px-3 py-1 bg-gray-800/70 border border-emerald-500 rounded-full text-sm mt-4 sm:mt-0">
                 <i class="fas fa-circle-notch fa-spin text-gray-500"></i>
                 <span>Checking Shizuku...</span>
@@ -33,70 +33,22 @@
                          <p class="mt-2 text-sm text-gray-400">Connecting to device...</p>
                      </div>
                      <div id="dashboard-grid" class="hidden grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="info-card p-3 flex flex-col items-center justify-center">
-                            <h3 class="card-title mb-2"><i class="fas fa-microchip mr-1"></i>CPU</h3>
-                            <p class="font-mono text-3xl font-bold text-emerald-300"><span id="cpu-percent">--</span>%</p>
-                        </div>
-                        <div class="info-card p-3 flex flex-col items-center justify-center">
-                            <h3 class="card-title mb-2"><i class="fas fa-memory mr-1"></i>RAM</h3>
-                            <p class="font-mono text-3xl font-bold text-emerald-300"><span id="ram-percent">--</span>%</p>
-                            <p class="text-xs text-gray-400 font-mono mt-1"><span id="ram-used">-.--</span>/<span id="ram-total">-.--</span> GB</p>
-                        </div>
-                         <div class="info-card p-3 flex flex-col items-center justify-center">
-                            <h3 class="card-title mb-2"><i class="fas fa-tachometer-alt mr-1"></i>FPS</h3>
-                            <p class="font-mono text-3xl font-bold text-emerald-300"><span id="fps-value">--</span></p>
-                        </div>
-                        <div class="info-card p-3 flex flex-col items-center justify-center">
-                            <h3 class="card-title mb-2"><i class="fas fa-battery-half mr-1"></i>Battery</h3>
-                            <p class="font-mono text-3xl font-bold text-emerald-300"><i id="battery-status-icon" class="fas fa-question-circle text-2xl"></i> <span id="battery-level">--</span>%</p>
-                            <p class="text-xs text-gray-400 font-mono mt-1">Temp: <span id="battery-temp">--</span>°C</p>
-                        </div>
-                        <div class="info-card col-span-2 md:col-span-4 p-4">
-                            <h3 class="card-title mb-3"><i class="fas fa-server mr-2"></i>System Info</h3>
-                            <div class="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-2">
-                               <div class="static-info-item"><span>Device</span><strong id="device-name">...</strong></div>
-                               <div class="static-info-item"><span>CPU Arch</span><strong id="device-cpu-arch">...</strong></div>
-                               <div class="static-info-item"><span>Android SDK</span><strong id="device-sdk">...</strong></div>
-                               <div class="static-info-item"><span>Build ID</span><strong id="device-build">...</strong></div>
-                               <div class="static-info-item"><span>Root Status</span><strong id="device-root">...</strong></div>
-                               <div class="static-info-item"><span>Uptime</span><strong id="device-uptime">...</strong></div>
-                            </div>
-                        </div>
+                        <div class="info-card p-3 flex flex-col items-center justify-center"><h3 class="card-title mb-2"><i class="fas fa-microchip mr-1"></i>CPU</h3><p class="font-mono text-3xl font-bold text-emerald-300"><span id="cpu-percent">--</span>%</p></div>
+                        <div class="info-card p-3 flex flex-col items-center justify-center"><h3 class="card-title mb-2"><i class="fas fa-memory mr-1"></i>RAM</h3><p class="font-mono text-3xl font-bold text-emerald-300"><span id="ram-percent">--</span>%</p><p class="text-xs text-gray-400 font-mono mt-1"><span id="ram-used">-.--</span>/<span id="ram-total">-.--</span> GB</p></div>
+                        <div class="info-card p-3 flex flex-col items-center justify-center"><h3 class="card-title mb-2"><i class="fas fa-tachometer-alt mr-1"></i>FPS</h3><p class="font-mono text-3xl font-bold text-emerald-300"><span id="fps-value">--</span></p></div>
+                        <div class="info-card p-3 flex flex-col items-center justify-center"><h3 class="card-title mb-2"><i class="fas fa-battery-half mr-1"></i>Battery</h3><p class="font-mono text-3xl font-bold text-emerald-300"><i id="battery-status-icon" class="fas fa-question-circle text-2xl"></i> <span id="battery-level">--</span>%</p><p class="text-xs text-gray-400 font-mono mt-1">Temp: <span id="battery-temp">--</span>°C</p></div>
+                        <div class="info-card col-span-2 md:col-span-4 p-4"><h3 class="card-title mb-3"><i class="fas fa-server mr-2"></i>System Info</h3><div class="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-2"><div class="static-info-item"><span>Device</span><strong id="device-name">...</strong></div><div class="static-info-item"><span>CPU Arch</span><strong id="device-cpu-arch">...</strong></div><div class="static-info-item"><span>Android SDK</span><strong id="device-sdk">...</strong></div><div class="static-info-item"><span>Build ID</span><strong id="device-build">...</strong></div><div class="static-info-item"><span>Root Status</span><strong id="device-root">...</strong></div><div class="static-info-item"><span>Uptime</span><strong id="device-uptime">...</strong></div></div></div>
                      </div>
                 </div>
-                
-                <div class="card mb-4 p-4">
-                    <h2 class="card-header mb-2"><i class="fas fa-mobile-alt mr-2"></i>Fake Device Modules</h2>
-                    <div id="fake-device-items" class="space-y-2"></div>
-                    <button id="restore-device-btn" class="btn btn-secondary w-full mt-3">Restore Original Device</button>
-                </div>
-                <div class="card mb-4 p-4">
-                    <h2 class="card-header mb-2"><i class="fas fa-tachometer-alt mr-2"></i>FPS Modules</h2>
-                    <div id="fps-module-items" class="space-y-2"></div>
-                    <button id="restore-fps-btn" class="btn btn-secondary w-full mt-3">Restore Default FPS</button>
-                </div>
-                <div class="card p-4">
-                    <div class="flex justify-between items-center"><h2 class="card-header mb-2"><i class="fas fa-history mr-2"></i>Command Log</h2><button id="clear-logs-btn" class="btn btn-secondary btn-sm">Clear All</button></div>
-                    <div id="log-list-home"></div>
-                </div>
+                <div class="card mb-4 p-4"><h2 class="card-header mb-2"><i class="fas fa-mobile-alt mr-2"></i>Fake Device Modules</h2><div id="fake-device-items" class="space-y-2"></div><button id="restore-device-btn" class="btn btn-secondary w-full mt-3">Restore Original Device</button></div>
+                <div class="card mb-4 p-4"><h2 class="card-header mb-2"><i class="fas fa-tachometer-alt mr-2"></i>FPS Modules</h2><div id="fps-module-items" class="space-y-2"></div><button id="restore-fps-btn" class="btn btn-secondary w-full mt-3">Restore Default FPS</button></div>
+                <div class="card p-4"><div class="flex justify-between items-center"><h2 class="card-header mb-2"><i class="fas fa-history mr-2"></i>Command Log</h2><button id="clear-logs-btn" class="btn btn-secondary btn-sm">Clear All</button></div><div id="log-list-home"></div></div>
             </div>
             
             <div x-show="activeTab === 'custom'" x-transition.opacity.duration.500ms>
-                <div class="card mb-4 p-4">
-                    <h2 class="card-header mb-2"><i class="fas fa-code-branch mr-2"></i>Custom Module</h2>
-                    <div class="flex justify-between items-center bg-gray-800/50 border-l-4 border-purple-500 p-3 rounded-lg">
-                        <span class="flex items-center gap-2"><i class="fas fa-cog text-emerald-400"></i><span>Using Custom Module</span></span>
-                        <div><input type="file" id="custom-module-input" class="hidden"><button id="custom-module-btn" class="btn btn-primary">Select</button></div>
-                    </div>
-                </div>
-                <div class="card mb-4 p-4">
-                    <h2 class="card-header mb-2"><i class="fas fa-terminal mr-2"></i>Custom Command</h2>
-                    <div class="flex flex-col gap-2">
-                        <textarea id="custom-command-input" class="input" rows="4" placeholder="Enter your command here..."></textarea>
-                        <button id="run-custom-command-btn" class="btn btn-primary">Run Command</button>
-                    </div>
-                </div>
-                 <div class="card p-4"><div class="flex justify-between items-center"><h2 class="card-header mb-2"><i class="fas fa-history mr-2"></i>Command Log</h2><button id="clear-logs-btn-custom" class="btn btn-secondary btn-sm">Clear All</button></div><div id="log-list-custom"></div></div>
+                <div class="card mb-4 p-4"><h2 class="card-header mb-2"><i class="fas fa-code-branch mr-2"></i>Custom Module</h2><div class="flex justify-between items-center bg-gray-800/50 border-l-4 border-purple-500 p-3 rounded-lg"><span class="flex items-center gap-2"><i class="fas fa-cog text-emerald-400"></i><span>Using Custom Module</span></span><div><input type="file" id="custom-module-input" class="hidden"><button id="custom-module-btn" class="btn btn-primary">Select</button></div></div></div>
+                <div class="card mb-4 p-4"><h2 class="card-header mb-2"><i class="fas fa-terminal mr-2"></i>Custom Command</h2><div class="flex flex-col gap-2"><textarea id="custom-command-input" class="input" rows="4" placeholder="Enter your command here..."></textarea><button id="run-custom-command-btn" class="btn btn-primary">Run Command</button></div></div>
+                <div class="card p-4"><div class="flex justify-between items-center"><h2 class="card-header mb-2"><i class="fas fa-history mr-2"></i>Command Log</h2><button id="clear-logs-btn-custom" class="btn btn-secondary btn-sm">Clear All</button></div><div id="log-list-custom"></div></div>
             </div>
 
             <div x-show="activeTab === 'performance'" x-transition.opacity.duration.500ms>
@@ -115,7 +67,7 @@
         <div class="p-4"><button @click="sidebarOpen = false" class="text-emerald-400 hover:text-emerald-300 mb-4 transition-colors"><i class="fas fa-times text-lg"></i></button><h2 class="text-lg font-bold text-emerald-300 mb-4"><i class="fas fa-bars mr-2"></i>Menu</h2><ul class="space-y-3"><li><a href="#" class="sidebar-link"><i class="fas fa-info-circle"></i><span id="app-version">Version: ...</span></a></li><li><a href="#" class="sidebar-link"><i class="fas fa-star"></i><span>Rating: 4.5/5</span></a></li><li><a href="#" class="sidebar-link"><i class="fas fa-user"></i><span>Credit: Agung Developer</span></a></li><li><a href="https://link.dana.id/minta?full_url=https://qr.dana.id/v1/281012092025071835695915" class="sidebar-link" target="_blank"><i class="fas fa-donate"></i><span>Donate</span></a></li></ul></div>
         <div class="p-4 border-t border-gray-700 text-center"><h3 class="text-md font-semibold text-emerald-300 mb-2"><i class="fas fa-share-alt mr-2"></i>Follow Us</h3><div class="flex justify-center gap-4 text-emerald-400"><a href="https://youtube.com/@neoninjectofficial?si=2JZi-XH7MyGX9xBX" class="hover:text-emerald-300 text-xl transition-colors" target="_blank"><i class="fab fa-youtube"></i></a><a href="https://www.tiktok.com/@neoninject?_t=ZS-8y7bsj0p15I&_r=1" class="hover:text-emerald-300 text-xl transition-colors" target="_blank"><i class="fab fa-tiktok"></i></a><a href="https://www.instagram.com/agungeka_22?igsh=dmo4YnR4dTF3cnhq" class="hover:text-emerald-300 text-xl transition-colors" target="_blank"><i class="fab fa-instagram"></i></a><a href="https://agungwandev.com" class="hover:text-emerald-300 text-xl transition-colors" target="_blank"><i class="fas fa-globe"></i></a></div></div>
     </div>
-
+    
     <div class="fixed bottom-4 left-1/2 -translate-x-1/2 w-11/12 max-w-sm z-40">
         <nav x-ref="nav" class="nav-container">
             <div id="nav-indicator" class="nav-indicator"></div>
@@ -135,22 +87,21 @@
     </div></div>
     <div id="notification" class="notification" x-show="notification.show" x-transition><p x-text="notification.message"></p></div>
     
-    <!-- Tombol Ajakan Bergabung Saluran WhatsApp -->
     <a href="https://whatsapp.com/channel/0029VbBS7OQ65yD3lwGVn407" target="_blank" rel="noopener noreferrer" class="whatsapp-channel-button" title="Join our WhatsApp Channel">
         <i class="fab fa-whatsapp"></i>
     </a>
     
     <script src="script.js"></script>
     <script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/685e4d34227c3f1910a765f4/default';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
-</script>
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/685e4d34227c3f1910a765f4/default';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+    </script>
 </body>
 </html>
