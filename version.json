@@ -1,0 +1,9 @@
+{
+  "latestVersion": "1.1",
+  "releaseNotes": [
+    "Perbaikan bug minor dan peningkatan stabilitas.",
+    "Penambahan modul performa baru.",
+    "Pembaruan antarmuka pengguna pada tab dashboard.",
+    "Optimalisasi penggunaan memori."
+  ]
+}
