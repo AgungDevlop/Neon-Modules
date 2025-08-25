@@ -1,132 +1,132 @@
 [
   {
     "name": "FRAME RATE CONTROLLER",
-    "desc": "Mengontrol frame rate untuk optimasi performa game dan aplikasi.",
+    "desc": "Controls the frame rate to optimize game and app performance.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/frameracontroller.sh"
   },
   {
     "name": "TERMAL CONTROLLER",
-    "desc": "Mengatur suhu perangkat untuk mencegah overheating selama penggunaan intensif.",
+    "desc": "Manages device temperature to prevent overheating during intensive use.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/termalcontroller.sh"
   },
   {
     "name": "CPU OPTIMIZER",
-    "desc": "Mengoptimalkan penggunaan CPU untuk performa lebih baik dan efisiensi energi.",
+    "desc": "Optimizes CPU usage for better performance and energy efficiency.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/cpuoptimizer.sh"
   },
   {
     "name": "GPU ENHANCER",
-    "desc": "Meningkatkan performa GPU untuk pengalaman grafis yang lebih mulus.",
+    "desc": "Enhances GPU performance for a smoother graphical experience.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/gpuenhancer.sh"
   },
   {
     "name": "RAM CLEANER",
-    "desc": "Membersihkan RAM untuk meningkatkan kecepatan dan stabilitas sistem.",
+    "desc": "Cleans RAM to improve system speed and stability.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/ramcleaner.sh"
   },
   {
     "name": "BATTERY SAVER",
-    "desc": "Mengoptimalkan konsumsi daya untuk memperpanjang masa pakai baterai.",
+    "desc": "Optimizes power consumption to extend battery life.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/batterysaver.sh"
   },
   {
     "name": "NETWORK BOOSTER",
-    "desc": "Meningkatkan stabilitas dan kecepatan koneksi jaringan.",
+    "desc": "Improves network connection stability and speed.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/networkbooster.sh"
   },
   {
     "name": "GAME MODE",
-    "desc": "Mengaktifkan mode khusus untuk optimasi performa saat bermain game.",
+    "desc": "Activates a special mode to optimize performance during gaming.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/gamemode.sh"
   },
   {
     "name": "STORAGE OPTIMIZER",
-    "desc": "Mengoptimalkan penggunaan penyimpanan untuk performa lebih baik.",
+    "desc": "Optimizes storage usage for better performance.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/storageoptimizer.sh"
   },
   {
     "name": "ANTI-LAG",
-    "desc": "Mengurangi lag dengan menyesuaikan scheduler dan prioritas proses.",
+    "desc": "Reduces lag by adjusting the scheduler and process priority.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/antilag.sh"
   },
   {
     "name": "MEMORY COMPRESSOR",
-    "desc": "Mengompresi memori untuk meningkatkan efisiensi penggunaan RAM.",
+    "desc": "Compresses memory to improve RAM usage efficiency.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/memorycompressor.sh"
   },
   {
     "name": "IO TUNER",
-    "desc": "Mengoptimalkan input/output untuk kecepatan baca/tulis yang lebih baik.",
+    "desc": "Optimizes input/output for better read/write speeds.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/iotuner.sh"
   },
   {
     "name": "POWER MODE",
-    "desc": "Menyesuaikan mode daya untuk performa tinggi atau hemat energi.",
+    "desc": "Adjusts power mode for high performance or energy saving.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/powermode.sh"
   },
   {
     "name": "PROCESS MANAGER",
-    "desc": "Mengatur dan menghentikan proses latar untuk performa lebih optimal.",
+    "desc": "Manages and stops background processes for more optimal performance.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/processmanager.sh"
   },
   {
     "name": "DISPLAY TUNER",
-    "desc": "Menyesuaikan refresh rate dan resolusi layar untuk performa visual.",
+    "desc": "Adjusts screen refresh rate and resolution for visual performance.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/displaytuner.sh"
   },
   {
     "name": "CACHE CLEARER",
-    "desc": "Membersihkan cache sistem untuk meningkatkan kecepatan perangkat.",
+    "desc": "Clears system cache to increase device speed.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/cacheclearer.sh"
   },
   {
     "name": "KERNEL TWEAKER",
-    "desc": "Menyesuaikan parameter kernel untuk performa maksimal.",
+    "desc": "Tweaks kernel parameters for maximum performance.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/kerneltweaker.sh"
   },
   {
     "name": "FPS UNLOCKER",
-    "desc": "Membuka batasan FPS untuk pengalaman bermain yang lebih halus.",
+    "desc": "Unlocks FPS limits for a smoother gaming experience.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/fpsunlocker.sh"
   },
   {
     "name": "VIBRATION CONTROL",
-    "desc": "Mengatur intensitas getaran untuk penghematan daya dan performa.",
+    "desc": "Adjusts vibration intensity for power savings and performance.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/vibrationcontrol.sh"
   },
   {
     "name": "SENSOR OPTIMIZER",
-    "desc": "Mengoptimalkan sensor perangkat untuk efisiensi dan akurasi.",
+    "desc": "Optimizes device sensors for efficiency and accuracy.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/sensoroptimizer.sh"
   },
   {
     "name": "BACKGROUND LIMITER",
-    "desc": "Membatasi proses latar untuk mengurangi beban sistem.",
+    "desc": "Limits background processes to reduce system load.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/backgroundlimiter.sh"
   },
   {
     "name": "AUDIO ENHANCER",
-    "desc": "Meningkatkan kualitas suara untuk pengalaman multimedia yang lebih baik.",
+    "desc": "Enhances sound quality for a better multimedia experience.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/audioenhancer.sh"
   },
   {
     "name": "BOOT OPTIMIZER",
-    "desc": "Mengoptimalkan proses booting perangkat untuk waktu startup yang lebih cepat.",
+    "desc": "Optimizes the device's boot process for faster startup times.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/bootoptimizer.sh"
   },
   {
     "name": "LOG CLEANER",
-    "desc": "Membersihkan log sistem untuk mengosongkan ruang dan meningkatkan performa.",
+    "desc": "Cleans system logs to free up space and improve performance.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/logcleaner.sh"
   },
   {
     "name": "TOUCH SENSITIVITY",
-    "desc": "Menyesuaikan sensitivitas layar sentuh untuk respons yang lebih baik.",
+    "desc": "Adjusts touchscreen sensitivity for better responsiveness.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/touchsensitivity.sh"
   },
   {
     "name": "STOP MODULE",
-    "desc": "Menghentikan semua modul performace yang sedang aktif.",
+    "desc": "Stops all active performance modules.",
     "url": "https://raw.githubusercontent.com/AgungDevlop/Neon-Modules/refs/heads/main/stopmodule.sh"
   }
 ]
