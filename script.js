@@ -60,22 +60,7 @@ const downloadedModules = new Set(JSON.parse(localStorage.getItem("downloadedMod
 let commandLogs = JSON.parse(localStorage.getItem("commandLogs") || "[]");
 
 async function loadAppVersion() { try { const version = window.Android?.getAppVersion ? await window.Android.getAppVersion() : "0.0.0"; document.getElementById("app-version").textContent = `Version: ${version || 'Unknown'}`; return version; } catch (e) { console.error("Error loading app version:", e); document.getElementById("app-version").textContent = "Version: Error"; return "0.0.0"; } }
-
-async function checkShizukuStatus() {
-    const statusEl = document.getElementById("shizuku-status");
-    try {
-        const status = window.Android?.getShizukuStatus ? await window.Android.getShizukuStatus() : false;
-        statusEl.innerHTML = `<i class="fas ${status ? 'fa-check-circle' : 'fa-times-circle'}" style="color: ${status ? 'var(--color-primary-light)' : 'var(--color-error)'};"></i><span>Shizuku: ${status ? 'Running' : 'Not Running'}</span>`;
-        statusEl.classList.remove('status-ok', 'status-error');
-        statusEl.classList.add(status ? 'status-ok' : 'status-error');
-        return status;
-    } catch (e) {
-        console.error("Error checking Shizuku status:", e);
-        statusEl.innerHTML = `<i class="fas fa-exclamation-circle" style="color: #f59e0b;"></i><span>Shizuku: Error</span>`;
-        statusEl.classList.remove('status-ok', 'status-error');
-        return false;
-    }
-}
+async function checkShizukuStatus() { try { const status = window.Android?.getShizukuStatus ? await window.Android.getShizukuStatus() : false; document.getElementById("shizuku-status").innerHTML = `<i class="fas ${status ? 'fa-check-circle' : 'fa-times-circle'}" style="color: ${status ? '#10b981' : '#ef4444'};"></i><span>Shizuku: ${status ? 'Running' : 'Not Running'}</span>`; return status; } catch (e) { console.error("Error checking Shizuku status:", e); document.getElementById("shizuku-status").innerHTML = `<i class="fas fa-exclamation-circle" style="color: #f59e0b;"></i><span>Shizuku: Error</span>`; return false; } }
 
 function compareVersions(v1, v2) { const p1 = v1.split('.').map(Number), p2 = v2.split('.').map(Number); for (let i = 0; i < Math.max(p1.length, p2.length); i++) { const n1 = p1[i] || 0, n2 = p2[i] || 0; if (n1 > n2) return 1; if (n1 < n2) return -1; } return 0; }
 async function checkForUpdates() { try { const localVersion = await loadAppVersion(); if (localVersion === "0.0.0") return; const response = await fetch(VERSION_URL, { cache: "no-store" }); const data = await response.json(); if (compareVersions(data.latestVersion, localVersion) > 0) { document.getElementById('update-version').textContent = data.latestVersion; document.getElementById('update-notes').innerHTML = `<ul>${data.releaseNotes.map(note => `<li>${note}</li>`).join('')}</ul>`; getAlpine().activeModal = 'update'; } } catch (e) { console.error("Update check failed:", e); } }
