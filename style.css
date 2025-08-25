@@ -132,3 +132,27 @@ input[type="checkbox"]:checked + .slider:before { transform: translateX(18px); }
 .update-notes li::before { content: '\f058'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: 0; color: var(--color-primary); }
 .progress-bar-container { width: 100%; height: 8px; background-color: var(--color-secondary); border-radius: 8px; overflow: hidden; margin-top: 0.5rem; }
 .progress-bar { height: 100%; background-color: var(--color-primary); transition: width 0.3s ease; }
+
+/* CSS untuk Tombol Saluran WhatsApp */
+.whatsapp-channel-button {
+    position: fixed;
+    bottom: 90px; /* Memberi jarak dari navigasi bawah */
+    right: 20px;
+    background-color: #25D366; /* Warna khas WhatsApp */
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    z-index: 100;
+    transition: transform 0.2s ease-in-out, background-color 0.2s;
+}
+
+.whatsapp-channel-button:hover {
+    background-color: #128C7E; /* Warna WhatsApp saat di-hover */
+    transform: scale(1.1);
+}
