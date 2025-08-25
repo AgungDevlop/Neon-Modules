@@ -14,11 +14,14 @@
     <!-- Konten Utama Aplikasi -->
     <div class="container mx-auto max-w-4xl px-4 sm:px-6 py-6 flex-grow relative z-10">
         <header class="flex flex-col sm:flex-row justify-between items-center mb-6">
-            <button @click="sidebarOpen = true" class="text-emerald-400 hover:text-emerald-300 sm:mr-4 transition-colors">
+            <button @click="sidebarOpen = true" class="header-btn">
                 <i class="fas fa-bars text-lg"></i>
             </button>
-            <h1 id="main-title" class="text-2xl sm:text-3xl font-bold text-emerald-300 text-center">Neon Magisk Module</h1>
-            <div id="shizuku-status" class="flex items-center gap-2 px-3 py-1 bg-gray-800/70 border border-emerald-500 rounded-full text-sm mt-4 sm:mt-0">
+            <h1 class="text-2xl sm:text-3xl font-bold text-emerald-300 tracking-wider flex items-center">
+                <i class="fas fa-atom mr-3 text-emerald-400"></i>
+                Neon Core System
+            </h1>
+            <div id="shizuku-status" class="flex items-center gap-2 px-3 py-1 bg-gray-800/70 rounded-full text-sm mt-4 sm:mt-0">
                 <i class="fas fa-circle-notch fa-spin text-gray-500"></i>
                 <span>Checking Shizuku...</span>
             </div>
@@ -32,12 +35,13 @@
                          <i class="fas fa-spinner fa-spin text-emerald-400 text-2xl"></i>
                          <p class="mt-2 text-sm text-gray-400">Connecting to device...</p>
                      </div>
-                     <div id="dashboard-grid" class="hidden grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="info-card p-3 flex flex-col items-center justify-center"><h3 class="card-title mb-2"><i class="fas fa-microchip mr-1"></i>CPU</h3><p class="font-mono text-3xl font-bold text-emerald-300"><span id="cpu-percent">--</span>%</p></div>
-                        <div class="info-card p-3 flex flex-col items-center justify-center"><h3 class="card-title mb-2"><i class="fas fa-memory mr-1"></i>RAM</h3><p class="font-mono text-3xl font-bold text-emerald-300"><span id="ram-percent">--</span>%</p><p class="text-xs text-gray-400 font-mono mt-1"><span id="ram-used">-.--</span>/<span id="ram-total">-.--</span> GB</p></div>
-                        <div class="info-card p-3 flex flex-col items-center justify-center"><h3 class="card-title mb-2"><i class="fas fa-tachometer-alt mr-1"></i>FPS</h3><p class="font-mono text-3xl font-bold text-emerald-300"><span id="fps-value">--</span></p></div>
-                        <div class="info-card p-3 flex flex-col items-center justify-center"><h3 class="card-title mb-2"><i class="fas fa-battery-half mr-1"></i>Battery</h3><p class="font-mono text-3xl font-bold text-emerald-300"><i id="battery-status-icon" class="fas fa-question-circle text-2xl"></i> <span id="battery-level">--</span>%</p><p class="text-xs text-gray-400 font-mono mt-1">Temp: <span id="battery-temp">--</span>°C</p></div>
-                        <div class="info-card col-span-2 md:col-span-4 p-4"><h3 class="card-title mb-3"><i class="fas fa-server mr-2"></i>System Info</h3><div class="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-2"><div class="static-info-item"><span>Device</span><strong id="device-name">...</strong></div><div class="static-info-item"><span>CPU Arch</span><strong id="device-cpu-arch">...</strong></div><div class="static-info-item"><span>Android SDK</span><strong id="device-sdk">...</strong></div><div class="static-info-item"><span>Build ID</span><strong id="device-build">...</strong></div><div class="static-info-item"><span>Root Status</span><strong id="device-root">...</strong></div><div class="static-info-item"><span>Uptime</span><strong id="device-uptime">...</strong></div></div></div>
+                     <!-- ▼▼▼ DASHBOARD RESPONSIVE BARU ▼▼▼ -->
+                     <div id="dashboard-grid" class="hidden">
+                        <div class="info-card" id="dash-cpu"><h3 class="card-title"><i class="fas fa-microchip mr-1"></i>CPU</h3><p class="font-mono text-3xl font-bold text-emerald-300"><span id="cpu-percent">--</span>%</p></div>
+                        <div class="info-card" id="dash-ram"><h3 class="card-title"><i class="fas fa-memory mr-1"></i>RAM</h3><p class="font-mono text-3xl font-bold text-emerald-300"><span id="ram-percent">--</span>%</p><p class="text-xs text-gray-400 font-mono mt-1"><span id="ram-used">-.--</span>/<span id="ram-total">-.--</span> GB</p></div>
+                        <div class="info-card" id="dash-fps"><h3 class="card-title"><i class="fas fa-tachometer-alt mr-1"></i>FPS</h3><p class="font-mono text-3xl font-bold text-emerald-300"><span id="fps-value">--</span></p></div>
+                        <div class="info-card" id="dash-battery"><h3 class="card-title"><i class="fas fa-battery-half mr-1"></i>BATTERY</h3><p class="font-mono text-3xl font-bold text-emerald-300"><i id="battery-status-icon" class="fas fa-question-circle text-2xl"></i> <span id="battery-level">--</span>%</p><p class="text-xs text-gray-400 font-mono mt-1">Temp: <span id="battery-temp">--</span>°C</p></div>
+                        <div class="info-card" id="dash-info"><h3 class="card-title mb-3"><i class="fas fa-server mr-2"></i>SYSTEM INFO</h3><div class="grid grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-2"><div class="static-info-item"><span>Device</span><strong id="device-name">...</strong></div><div class="static-info-item"><span>CPU Arch</span><strong id="device-cpu-arch">...</strong></div><div class="static-info-item"><span>Android SDK</span><strong id="device-sdk">...</strong></div><div class="static-info-item"><span>Build ID</span><strong id="device-build">...</strong></div><div class="static-info-item"><span>Root Status</span><strong id="device-root">...</strong></div><div class="static-info-item"><span>Uptime</span><strong id="device-uptime">...</strong></div></div></div>
                      </div>
                 </div>
                 <div class="card mb-4 p-4"><h2 class="card-header mb-2"><i class="fas fa-mobile-alt mr-2"></i>Fake Device Modules</h2><div id="fake-device-items" class="space-y-2"></div><button id="restore-device-btn" class="btn btn-secondary w-full mt-3">Restore Original Device</button></div>
@@ -64,7 +68,7 @@
     </div>
 
     <div x-show="sidebarOpen" @click.outside="sidebarOpen = false" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full" class="fixed top-0 left-0 h-full w-64 bg-gray-900/95 border-r border-emerald-600 z-50">
-        <div class="p-4"><button @click="sidebarOpen = false" class="text-emerald-400 hover:text-emerald-300 mb-4 transition-colors"><i class="fas fa-times text-lg"></i></button><h2 class="text-lg font-bold text-emerald-300 mb-4"><i class="fas fa-bars mr-2"></i>Menu</h2><ul class="space-y-3"><li><a href="#" class="sidebar-link"><i class="fas fa-info-circle"></i><span id="app-version">Version: ...</span></a></li><li><a href="#" class="sidebar-link"><i class="fas fa-star"></i><span>Rating: 4.5/5</span></a></li><li><a href="#" class="sidebar-link"><i class="fas fa-user"></i><span>Credit: Agung Developer</span></a></li><li><a href="https://link.dana.id/minta?full_url=https://qr.dana.id/v1/281012092025071835695915" class="sidebar-link" target="_blank"><i class="fas fa-donate"></i><span>Donate</span></a></li></ul></div>
+        <div class="p-4"><button @click="sidebarOpen = false" class="header-btn mb-4"><i class="fas fa-times text-lg"></i></button><h2 class="text-lg font-bold text-emerald-300 mb-4"><i class="fas fa-bars mr-2"></i>Menu</h2><ul class="space-y-3"><li><a href="#" class="sidebar-link"><i class="fas fa-info-circle"></i><span id="app-version">Version: ...</span></a></li><li><a href="#" class="sidebar-link"><i class="fas fa-star"></i><span>Rating: 4.5/5</span></a></li><li><a href="#" class="sidebar-link"><i class="fas fa-user"></i><span>Credit: Agung Developer</span></a></li><li><a href="https://link.dana.id/minta?full_url=https://qr.dana.id/v1/281012092025071835695915" class="sidebar-link" target="_blank"><i class="fas fa-donate"></i><span>Donate</span></a></li></ul></div>
         <div class="p-4 border-t border-gray-700 text-center"><h3 class="text-md font-semibold text-emerald-300 mb-2"><i class="fas fa-share-alt mr-2"></i>Follow Us</h3><div class="flex justify-center gap-4 text-emerald-400"><a href="https://youtube.com/@neoninjectofficial?si=2JZi-XH7MyGX9xBX" class="hover:text-emerald-300 text-xl transition-colors" target="_blank"><i class="fab fa-youtube"></i></a><a href="https://www.tiktok.com/@neoninject?_t=ZS-8y7bsj0p15I&_r=1" class="hover:text-emerald-300 text-xl transition-colors" target="_blank"><i class="fab fa-tiktok"></i></a><a href="https://www.instagram.com/agungeka_22?igsh=dmo4YnR4dTF3cnhq" class="hover:text-emerald-300 text-xl transition-colors" target="_blank"><i class="fab fa-instagram"></i></a><a href="https://agungwandev.com" class="hover:text-emerald-300 text-xl transition-colors" target="_blank"><i class="fas fa-globe"></i></a></div></div>
     </div>
     
