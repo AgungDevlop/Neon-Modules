@@ -1,0 +1,16 @@
+{
+  "restore_dpi": "wm density reset",
+  "restore_renderer": "setprop debug.hwui.renderer opengl",
+  "restore_thermal": "cmd thermalservice override-status 0",
+  "restore_game_mode": "settings put global game_mode_on 0",
+  "restore_power_mode": "cmd power set-fixed-performance-mode-enabled false",
+  "restore_fps_unlocker": "settings delete system peak_refresh_rate && settings delete system min_refresh_rate",
+  "restore_vibration_control": "settings put system haptic_feedback_enabled 1",
+  "restore_background_limiter": "settings delete global background_process_limit",
+  "restore_boot_optimizer": "setprop ro.config.enable.bootsound 1",
+  "restore_animation_speed": "settings put global window_animation_scale 1.0 && settings put global transition_animation_scale 1.0 && settings put global animator_duration_scale 1.0",
+  "restore_wifi_scan": "settings put global wifi_scan_always_enabled 1",
+  "restore_gpu_rendering": "setprop debug.hwui.force_hw_ui false",
+  "restore_tcp_handshake": "setprop net.tcp.default_init_rwnd 0",
+  "restore_storage_trim": "settings delete global fstrim_mandatory_interval"
+}
