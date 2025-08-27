@@ -35,7 +35,7 @@ let PERFORMANCE_COMMANDS = {};
 const GAME_JSON_URL = "game.json"; 
 const PERFORMANCE_JSON_URL = "performance.json";
 const selectedGames = new Set(JSON.parse(localStorage.getItem("selectedGames") || "[]"));
-let boostState = {}; // NEW: Global state for before/after stats
+let boostState = {}; // Global state for before/after stats
 
 function getAlpine() { return document.body._x_dataStack[0]; }
 function generateRandomId() { return Array.from({ length: 15 }, () => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01223456789'.charAt(Math.floor(Math.random() * 62))).join(''); }
@@ -114,7 +114,7 @@ function loadTweakSettings() { tweakSettings = JSON.parse(localStorage.getItem('
 function saveTweakSetting(key, value) { tweakSettings[key] = value; localStorage.setItem('tweakSettings', JSON.stringify(tweakSettings)); }
 function applyStoredTweaks() { Object.keys(tweakSettings).forEach(key => { const value = tweakSettings[key]; const element = document.querySelector(`[data-tweak="${key}"][value="${value}"]`) || document.querySelector(`[data-tweak="${key}"]`); if (!element) return; if (element.type === 'radio') { element.checked = true; } else if (element.type === 'checkbox') { element.checked = value; } else if (element.type === 'range') { element.value = value; document.getElementById(`${element.id}-value`).textContent = value; } else if (element.type === 'number') { element.value = value; } }); }
 
-// --- GAME & PERFORMANCE LOGIC (HEAVILY UPDATED) ---
+// --- GAME & PERFORMANCE LOGIC ---
 async function loadPerformanceCommands() {
     PERFORMANCE_COMMANDS = await loadData("cachedPerfCommands", PERFORMANCE_JSON_URL);
     if (PERFORMANCE_COMMANDS && PERFORMANCE_COMMANDS.authorInfo) {
@@ -307,7 +307,10 @@ async function boostGame(packageName, gameName) {
 window.onShellOutput = function(moduleName, output, logId) { const silentOps = ['DeviceInfo', 'SilentOp', 'DnsCheck']; if (!silentOps.includes(moduleName)) { const outEl = document.getElementById("cmd-output"); if (window.currentLogId !== logId) { outEl.innerHTML = ''; window.currentOutput = ''; window.currentLogId = logId; } window.currentOutput += output + "\n"; const line = document.createElement('span'); line.innerHTML = parseAnsiColors(output); outEl.appendChild(line); outEl.appendChild(document.createTextNode('\n')); outEl.scrollTop = outEl.scrollHeight; window.Android?.saveLog?.(window.currentOutput, logId); } };
 window.downloadComplete = function(moduleName, success) { const alpine = getAlpine(); const progressBar = document.getElementById("modal-progress"), statusText = document.getElementById("modal-status"); clearInterval(window.downloadingModuleInterval); progressBar.style.width = success ? "100%" : "0%"; statusText.textContent = success ? "Complete!" : "Failed."; setTimeout(() => { if (alpine.activeModal === 'download') alpine.activeModal = ''; }, 500); if (success) { downloadedModules.add(moduleName); localStorage.setItem("downloadedModules", JSON.stringify([...downloadedModules])); getAlpine().showNotification(`${moduleName} downloaded!`); if (window.downloadCallback) { window.downloadCallback(); window.downloadCallback = null; } else { const module = allModules.find(m => m.name === moduleName) || allFpsModules.find(m => m.name === moduleName); const fakeDevice = allFakeDevices.find(d => d.name === moduleName); if (module) { handleModuleAction(module.name, module.url); } else if (fakeDevice) { handleFakeDeviceAction(fakeDevice.name, fakeDevice.url); } } } else { getAlpine().showNotification(`Download failed for ${moduleName}.`); window.runComplete(moduleName, false, null); } };
 
-window.runComplete = async function(moduleName, success, logId) { // Now async
+// ==================================================================
+// == BAGIAN YANG DIPERBAIKI ADA DI FUNGSI runComplete DI BAWAH INI ==
+// ==================================================================
+window.runComplete = async function(moduleName, success, logId) {
     const alpine = getAlpine();
     const silentOps = ['DeviceInfo', 'SilentOp', 'DnsCheck'];
     if (silentOps.includes(moduleName)) return;
@@ -326,20 +329,34 @@ window.runComplete = async function(moduleName, success, logId) { // Now async
 
     if (success) {
         alpine.showNotification(`${moduleName} executed successfully!`);
+        
+        // Cek apakah ini adalah proses boosting game
         if (moduleName.includes('Boosting')) {
+            // Blok ini hanya berjalan jika perintah boosting utama berhasil.
+            // Sekarang kita menangani aksi setelah boost.
             try {
-                getAlpine().showNotification("Gathering final results...");
+                alpine.showNotification("Gathering final results...");
                 const afterOutput = await executeShellCommand(PERFORMANCE_COMMANDS.getSystemStats, "SilentOp", `stats-after-${generateRandomId()}`);
                 const afterStats = parseSystemStats(afterOutput);
+                // Jika berhasil mendapatkan status, tampilkan hasilnya.
                 displayBoostResults(boostState.before, afterStats);
-                boostState = {}; // Reset state
             } catch (e) {
+                // Jika GAGAL mendapatkan status, catat error dan sembunyikan panel hasil.
                 console.error("Failed to get after-boost stats:", e);
                 document.getElementById('boost-results-container').classList.add('hidden');
+                alpine.showNotification("Could not retrieve boost results.");
+            } finally {
+                // KUNCI PERBAIKAN: Blok 'finally' akan SELALU berjalan setelah try/catch selesai.
+                // Ini memastikan dialog 'support' akan selalu muncul secara konsisten.
+                
+                // 1. Reset state global untuk persiapan boost berikutnya.
+                boostState = {};
+                
+                // 2. Jadwalkan dialog support/follow untuk muncul setelah jeda singkat.
+                setTimeout(() => {
+                    alpine.activeModal = 'support';
+                }, 1200); // Jeda sedikit lebih lama agar tidak terasa terburu-buru
             }
-            setTimeout(() => {
-                alpine.activeModal = 'support';
-            }, 1000);
         }
     } else {
         alpine.showNotification(`Failed to run ${moduleName}.`);
