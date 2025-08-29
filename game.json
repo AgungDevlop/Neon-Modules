@@ -373,5 +373,15 @@
     "nama_game": "Rainbow Six Mobile",
     "nama_paket": "com.ubisoft.rainbowsixmobile.r6.fps.pvp.shooter",
     "developer": "Ubisoft Entertainment"
+  },
+  {
+    "nama_game": "Arena Breakout",
+    "nama_paket": "com.proximabeta.mf.uamo",
+    "developer": "Level Infinite"
+  },
+  {
+    "nama_game": "Arena Breakout (China)",
+    "nama_paket": "com.tencent.tmgp.mf",
+    "developer": "Tencent Games"
   }
 ]
